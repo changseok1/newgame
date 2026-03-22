@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또용지 3종 앱</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#142033;
+      --muted:#5f6f89;
+      --line:#d9e1ee;
+      --red:#ff2727;
+      --paper:#f1ede2;
+      --blue:#3457ff;
+      --danger:#b42318;
+      --danger-bg:#fff2f2;
+      --danger-line:#ffd0d0;
+      --ok-bg:#f5f8ff;
+      --ok-line:#d9e5ff;
+      --ok-text:#29406f;
+      --save-green:#1f9d62;
+      --save-green-bg:#edf9f3;
+      --save-green-line:#caeedb;
+      --mark-line:#7fd132;
+      --shadow:0 14px 36px rgba(20,32,51,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,var(--bg) 100%);color:var(--text);font-family:"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+    .app{max-width:860px;margin:0 auto;padding:18px 14px 42px}
+    .hero{background:linear-gradient(135deg,#1f3fff 0%,#4f75ff 100%);color:#fff;border-radius:24px;padding:20px 18px;box-shadow:0 20px 50px rgba(52,87,255,.22);margin-bottom:16px}
+    .hero h1{margin:0 0 8px;font-size:28px}
+    .hero p{margin:0;line-height:1.6;font-size:14px;opacity:.97}
+    .slip-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
+    .slip-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .slip-head h2{margin:0;font-size:20px}
+    .slip-head p{margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:8px 12px;background:#eef4ff;color:#1f3fff;font-size:12px;font-weight:800;white-space:nowrap}
+    .tool-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    button{border:none;border-radius:12px;padding:11px 14px;background:var(--blue);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+    button.secondary{background:#edf2ff;color:#2740b6;border:1px solid #cfdaff}
+    button.ghost{background:#fff;color:#344054;border:1px solid var(--line)}
+    button.warn{background:#fff6f6;color:#a61b1b;border:1px solid #ffc9c9}
+    button.active{outline:3px solid rgba(52,87,255,.16)}
+    .meta-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .mini-box{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fcfdff;min-height:76px}
+    .mini-box .k{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px}
+    .mini-box .v{font-size:13px;line-height:1.6;font-weight:700;word-break:break-word}
+    .notice{display:none;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.55;margin-bottom:12px}
+    .notice.show{display:block}
+    .notice.error{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-line)}
+    .notice.info{background:var(--ok-bg);color:var(--ok-text);border:1px solid var(--ok-line)}
+
+    .forecast-slip-shell{display:flex;justify-content:center}
+    .forecast-slip{position:relative;width:min(100%,414px);border:4px solid var(--red);border-radius:2px;background:var(--paper);padding:16px 10px 14px}
+    .forecast-slip-top{display:grid;grid-template-columns:56px 1fr;gap:0;margin-bottom:12px}
+    .forecast-slip-box{height:56px;border:3px solid var(--red);border-right:none;background:var(--paper)}
+    .forecast-slip-round{height:56px;border:3px solid var(--red);display:flex;align-items:center;justify-content:flex-end;padding:0 10px;background:var(--red);color:#fff;font-weight:900;font-size:28px;letter-spacing:-1px}
+    .forecast-slip-grid-wrap{position:relative}
+    .forecast-slip-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;position:relative;padding:0 0 4px}
+    .forecast-num{position:relative;height:92px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:19px;font-weight:500;cursor:pointer;user-select:none}
+    .forecast-num > span{position:relative;z-index:1;background:transparent;padding:0 6px;line-height:1}
+    .forecast-num::before{content:"";position:absolute;inset:16px 6px 16px 6px;pointer-events:none;background:
+      linear-gradient(var(--red),var(--red)) left top / 18px 3px no-repeat,
+      linear-gradient(var(--red),var(--red)) left top / 3px 11px no-repeat,
+      linear-gradient(var(--red),var(--red)) left bottom / 18px 3px no-repeat,
+      linear-gradient(var(--red),var(--red)) left bottom / 3px 11px no-repeat,
+      linear-gradient(var(--red),var(--red)) right top / 18px 3px no-repeat,
+      linear-gradient(var(--red),var(--red)) right top / 3px 11px no-repeat,
+      linear-gradient(var(--red),var(--red)) right bottom / 18px 3px no-repeat,
+      linear-gradient(var(--red),var(--red)) right bottom / 3px 11px no-repeat;
+      opacity:1}
+    .forecast-num.blank{visibility:hidden;pointer-events:none}
+    .forecast-num-badge{position:absolute;z-index:8;width:33px;height:66px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:800;box-shadow:0 4px 9px rgba(20,32,51,.11)}
+    .forecast-num-badge.bucket1{background:#eab308;color:#1f2937}
+    .forecast-num-badge.bucket2{background:#2563eb}
+    .forecast-num-badge.bucket3{background:#dc2626}
+    .forecast-num-badge.bucket4{background:#111827}
+    .forecast-num-badge.bucket5{background:#16a34a}
+    .forecast-num.excluded > span{color:#111827!important;font-weight:700}
+    .forecast-num.excluded .forecast-num-badge{display:none!important}
+    .forecast-num.conflict .forecast-num-badge{box-shadow:0 0 0 4px rgba(239,43,43,.2),0 6px 12px rgba(20,32,51,.16);outline:3px solid rgba(239,43,43,.25)}
+    .forecast-num.pending .forecast-num-badge{filter:saturate(.92)}
+    .forecast-line-layer{position:absolute;inset:0;pointer-events:none;z-index:4;width:100%;height:100%}
+    .forecast-slip-info{margin-top:14px;border-top:3px solid var(--red);padding-top:14px;display:grid;gap:10px}
+    .display-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:start}
+    .speech-box{position:relative;border:1px solid var(--line);border-radius:16px;padding:10px 12px;background:#fcfdff;min-height:76px}
+    .speech-box::after{content:"";position:absolute;left:18px;bottom:-8px;width:14px;height:14px;background:#fcfdff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+    .save-btn,.copy-btn{height:44px;padding:0 14px;border-radius:12px;align-self:center;white-space:nowrap}
+    .save-btn{background:var(--save-green);color:#fff}
+    .copy-btn{background:#eef4ff;color:#2740b6;border:1px solid #cfdaff}
+    .btn-flash{transform:translateY(-1px);transition:all .2s ease}
+    .btn-success{background:#16a34a!important;color:#fff!important;border-color:#16a34a!important}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat-box{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fcfdff}
+    .stat-box .k{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+    .stat-box .v{font-size:15px;font-weight:800}
+    .legend{display:flex;flex-wrap:wrap;gap:8px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:#475467;font-weight:700}
+    .swatch{width:12px;height:12px;border-radius:50%;display:inline-block}
+    .swatch.gray{background:#9ca3af}
+    .swatch.red{background:#ef2b2b}
+    .swatch.b1{background:#eab308}.swatch.b2{background:#2563eb}.swatch.b3{background:#dc2626}.swatch.b4{background:#111827}.swatch.b5{background:#16a34a}
+    .hint{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+    .saved-panel{margin-top:18px;border:1px solid var(--line);border-radius:20px;background:#f7f9fc;padding:14px}
+    .saved-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:12px}
+    .saved-head h3{margin:0;font-size:18px}
+    .saved-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .saved-list{border:1px solid var(--line);border-radius:18px;background:#fff;padding:6px 14px}
+    .saved-empty{padding:14px 4px;color:var(--muted);font-size:14px}
+    .saved-item{display:grid;grid-template-columns:40px 1fr 28px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #e8eef6}
+    .saved-item:last-child{border-bottom:none}
+    .saved-idx{color:var(--muted);font-weight:700}
+    .saved-nums{font-weight:800;font-size:15px;letter-spacing:-.2px}
+    .delete-saved{background:none;border:none;color:#15915a;font-size:18px;padding:0;width:28px;height:28px;border-radius:50%;border:1px solid #b7e3cb;display:flex;align-items:center;justify-content:center}
+    .save-note{margin-top:10px;font-size:12px;color:#5b6f86}
+
+    @media (max-width:700px){
+      .forecast-slip{width:min(100%,414px)}
+      .forecast-num{height:86px;font-size:17px}
+      .forecast-num-badge{width:31px;height:62px;font-size:16px}
+      .stats-row{grid-template-columns:1fr 1fr}
+      .meta-row{grid-template-columns:1fr}
+      .slip-head{flex-direction:column}
+      .display-row{grid-template-columns:1fr;gap:10px}
+      .save-btn,.copy-btn{width:100%;height:42px}
+      .saved-head{flex-direction:column;align-items:stretch}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <h1>로또용지 3종 앱</h1>
+      <p>위에서부터 자동, 반자동, 수동 용지입니다. 모바일에서는 아래로 스크롤하며 3장을 순서대로 볼 수 있습니다. 선 연결은 항상 오름차순 기준으로 이어지고, 자동/반자동의 제외수는 별도 초기화 버튼으로만 지워집니다.</p>
+    </section>
+
+    <section class="slip-card" id="auto-card">
+      <div class="slip-head">
+        <div>
+          <h2>자동 로또용지</h2>
+          <p>번호를 직접 선택하지 않고 생성합니다. 제외수 설정 후 생성하면 제외된 숫자를 빼고 6개가 랜덤 생성됩니다.</p>
+        </div>
+        <div class="badge">1번 용지 · 자동</div>
+      </div>
+      <div class="tool-row">
+        <button id="auto-generate">생성</button>
+        <button id="auto-reset" class="secondary">초기화</button>
+        <button id="auto-ex-reset" class="ghost">제외수 초기화</button>
+        <button id="auto-ex-mode" class="warn">제외수 설정 OFF</button>
+      </div>
+      <div class="meta-row">
+        <div class="mini-box"><div class="k">제외수</div><div class="v" id="auto-excluded-text">없음</div></div>
+        <div class="mini-box"><div class="k">현재 상태</div><div class="v" id="auto-state-text">제외수 설정 후 생성하거나 바로 생성할 수 있습니다.</div></div>
+      </div>
+      <div class="notice error" id="auto-error"></div>
+      <div class="notice info show" id="auto-info">자동 용지는 제외수 설정 모드일 때만 번호 클릭이 가능합니다.</div>
+      <div id="auto-slip"></div>
+      <div class="hint">초기화는 생성결과만 지우고 제외수는 유지합니다.</div>
+    </section>
+
+    <section class="slip-card" id="semi-card">
+      <div class="slip-head">
+        <div>
+          <h2>반자동 로또용지</h2>
+          <p>원하는 번호 1~5개를 직접 선택하고 생성하면 나머지 숫자만 자동으로 채워집니다. 선택수와 제외수가 겹치면 경고 후 생성되지 않습니다.</p>
+        </div>
+        <div class="badge">2번 용지 · 반자동</div>
+      </div>
+      <div class="tool-row">
+        <button id="semi-generate">생성</button>
+        <button id="semi-reset" class="secondary">초기화</button>
+        <button id="semi-ex-reset" class="ghost">제외수 초기화</button>
+        <button id="semi-ex-mode" class="warn">제외수 설정 OFF</button>
+      </div>
+      <div class="meta-row">
+        <div class="mini-box"><div class="k">선택수</div><div class="v" id="semi-selected-text">없음</div></div>
+        <div class="mini-box"><div class="k">제외수</div><div class="v" id="semi-excluded-text">없음</div></div>
+      </div>
+      <div class="notice error" id="semi-error"></div>
+      <div class="notice info show" id="semi-info">기본 클릭은 선택수 입력입니다. 제외수 설정 모드를 켜면 같은 번호판에서 제외수를 입력합니다.</div>
+      <div id="semi-slip"></div>
+      <div class="hint">초기화는 선택수와 생성결과를 지우고, 제외수는 유지합니다.</div>
+    </section>
+
+    <section class="slip-card" id="manual-card">
+      <div class="slip-head">
+        <div>
+          <h2>수동 로또용지</h2>
+          <p>원하는 숫자를 직접 찍어보고 조합 정보를 확인하는 용지입니다. 생성 버튼은 없고 최대 6개까지 직접 선택할 수 있습니다.</p>
+        </div>
+        <div class="badge">3번 용지 · 수동</div>
+      </div>
+      <div class="tool-row">
+        <button id="manual-reset" class="secondary">초기화</button>
+      </div>
+      <div class="meta-row">
+        <div class="mini-box"><div class="k">선택수</div><div class="v" id="manual-selected-text">없음</div></div>
+        <div class="mini-box"><div class="k">현재 상태</div><div class="v" id="manual-state-text">번호를 누르면 실시간으로 합계, 홀짝, AC값이 계산됩니다.</div></div>
+      </div>
+      <div class="notice error" id="manual-error"></div>
+      <div id="manual-slip"></div>
+    </section>
+
+    <section class="saved-panel">
+      <div class="saved-head">
+        <h3>저장된 번호</h3>
+        <div class="saved-actions">
+          <button id="saved-copy" class="secondary">복사</button>
+          <button id="saved-clear" class="ghost">저장공간 초기화</button>
+        </div>
+      </div>
+      <div class="saved-list" id="saved-list"></div>
+      <div class="save-note">저장 버튼으로 누적 저장하고, 복사 버튼으로 저장된 조합 전체를 클립보드에 복사할 수 있습니다.</div>
+    </section>
+  </div>
+
+  <script>
+    const RANGE = Array.from({length:45}, (_,i)=>i+1);
+    const GRID_NUMBERS = [...RANGE, null, null, null, null];
+
+    const STORAGE_KEY = 'lotto-slip-saved-v1';
+    const state = {
+      auto: { excluded:new Set(), final:[], excludeMode:false, error:'' },
+      semi: { selected:new Set(), excluded:new Set(), final:[], excludeMode:false, error:'' },
+      manual: { selected:new Set(), error:'' },
+      saved: loadSaved()
+    };
+
+    const el = {
+      autoSlip: document.getElementById('auto-slip'),
+      semiSlip: document.getElementById('semi-slip'),
+      manualSlip: document.getElementById('manual-slip'),
+      autoExcludedText: document.getElementById('auto-excluded-text'),
+      autoStateText: document.getElementById('auto-state-text'),
+      autoError: document.getElementById('auto-error'),
+      autoInfo: document.getElementById('auto-info'),
+      semiSelectedText: document.getElementById('semi-selected-text'),
+      semiExcludedText: document.getElementById('semi-excluded-text'),
+      semiError: document.getElementById('semi-error'),
+      semiInfo: document.getElementById('semi-info'),
+      manualSelectedText: document.getElementById('manual-selected-text'),
+      manualStateText: document.getElementById('manual-state-text'),
+      manualError: document.getElementById('manual-error'),
+      autoExMode: document.getElementById('auto-ex-mode'),
+      semiExMode: document.getElementById('semi-ex-mode'),
+      savedList: document.getElementById('saved-list')
+    };
+
+    function sorted(arrOrSet){ return Array.from(arrOrSet).sort((a,b)=>a-b); }
+    function formatNums(nums){ return nums.length ? nums.join(', ') : '없음'; }
+    function getBucket(n){ if(n<=10) return 'bucket1'; if(n<=20) return 'bucket2'; if(n<=30) return 'bucket3'; if(n<=40) return 'bucket4'; return 'bucket5'; }
+    function oddEvenText(nums){ const odd = nums.filter(n=>n%2===1).length; return `홀 ${odd} / 짝 ${nums.length-odd}`; }
+    function calcAC(nums){
+      if(nums.length < 2) return 0;
+      const sortedNums = [...nums].sort((a,b)=>a-b);
+      const diffs = new Set();
+      for(let i=0;i<sortedNums.length;i++){
+        for(let j=i+1;j<sortedNums.length;j++) diffs.add(sortedNums[j]-sortedNums[i]);
+      }
+      return diffs.size - (sortedNums.length - 1);
+    }
+    function calcStats(nums){
+      const sortedNums = [...nums].sort((a,b)=>a-b);
+      return {
+        sum: sortedNums.reduce((a,b)=>a+b,0),
+        oddEven: oddEvenText(sortedNums),
+        ac: calcAC(sortedNums),
+        nums: sortedNums
+      };
+    }
+    function shuffle(list){
+      const arr = [...list];
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
+    function pickRandom(pool, count){ return shuffle(pool).slice(0,count).sort((a,b)=>a-b); }
+    function loadSaved(){
+      try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed.filter(item => Array.isArray(item) && item.length===6) : [];
+      } catch(e){ return []; }
+    }
+    function persistSaved(){
+      try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state.saved)); } catch(e) {}
+    }
+    function saveCombination(nums){
+      if(!nums || nums.length !== 6) return false;
+      state.saved.push([...nums].sort((a,b)=>a-b));
+      persistSaved();
+      renderSaved();
+      return true;
+    }
+    function flashButton(button, originalText, successText='✔'){
+      if(!button) return;
+      button.classList.add('btn-flash','btn-success');
+      button.dataset.originalText = originalText;
+      button.textContent = successText;
+      window.setTimeout(()=>{
+        button.classList.remove('btn-success');
+        button.textContent = button.dataset.originalText || originalText;
+      }, 300);
+    }
+    async function writeClipboard(text){
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+    }
+    async function copySaved(button){
+      const text = state.saved.map(nums => nums.join(', ')).join('\n');
+      if(!text) return;
+      await writeClipboard(text);
+      flashButton(button, '복사');
+    }
+    function deleteSaved(index){
+      state.saved.splice(index,1);
+      persistSaved();
+      renderSaved();
+    }
+    function clearSavedAll(){
+      state.saved = [];
+      persistSaved();
+      renderSaved();
+    }
+
+    function clearAutoResult(keepError=false){
+      state.auto.final = [];
+      if(!keepError) state.auto.error='';
+    }
+    function clearSemiResult(keepError=false){
+      state.semi.final = [];
+      if(!keepError) state.semi.error='';
+    }
+    function clearManual(){ state.manual.selected.clear(); state.manual.error=''; }
+
+    function renderSlip(target, type){
+      const s = state[type];
+      let visibleNumbers = [];
+      if(type==='auto') visibleNumbers = sorted(s.final);
+      if(type==='semi') visibleNumbers = s.final.length ? sorted(s.final) : sorted(s.selected);
+      if(type==='manual') visibleNumbers = sorted(s.selected);
+      const stats = visibleNumbers.length ? calcStats(visibleNumbers) : null;
+
+      target.innerHTML = `
+        <div class="forecast-slip-shell">
+          <div class="forecast-slip">
+            <div class="forecast-slip-top">
+              <div class="forecast-slip-box"></div>
+              <div class="forecast-slip-round"></div>
+            </div>
+            <div class="forecast-slip-grid-wrap">
+              <svg class="forecast-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+              <div class="forecast-slip-grid">
+                ${GRID_NUMBERS.map((n, idx) => makeCell(type, n, idx)).join('')}
+              </div>
+            </div>
+            <div class="forecast-slip-info">
+              <div class="display-row">
+                <div class="speech-box">
+                  <div class="k">표시 번호</div>
+                  <div class="v">${formatNums(visibleNumbers)}</div>
+                </div>
+                <button class="save-btn" data-action="save">저장</button>
+                <button class="copy-btn" data-action="copy-current">복사</button>
+              </div>
+              <div class="stats-row">
+                <div class="stat-box"><div class="k">합계</div><div class="v">${stats ? stats.sum : '-'}</div></div>
+                <div class="stat-box"><div class="k">홀짝</div><div class="v">${stats ? stats.oddEven.replace('홀 ','').replace(' / 짝 ',':') : '-'}</div></div>
+                <div class="stat-box"><div class="k">AC값</div><div class="v">${stats ? stats.ac : '-'}</div></div>
+                <div class="stat-box"><div class="k">상태</div><div class="v">${slipStateText(type, visibleNumbers)}</div></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+
+      const grid = target.querySelector('.forecast-slip-grid');
+      grid.querySelectorAll('.forecast-num[data-num]').forEach(node => {
+        node.addEventListener('click', () => handleCellClick(type, Number(node.dataset.num)));
+      });
+      const saveBtn = target.querySelector('[data-action="save"]');
+      const copyBtn = target.querySelector('[data-action="copy-current"]');
+      saveBtn.addEventListener('click', ()=>{
+        if(visibleNumbers.length !== 6) return;
+        if(saveCombination(visibleNumbers)) flashButton(saveBtn, '저장');
+      });
+      copyBtn.addEventListener('click', async ()=>{
+        if(visibleNumbers.length !== 6) return;
+        const text = visibleNumbers.join(', ');
+        await writeClipboard(text);
+        flashButton(copyBtn, '복사');
+      });
+      drawLines(target.querySelector('.forecast-line-layer'), grid, visibleNumbers);
+    }
+
+    function makeCell(type, num, idx){
+      if(!num) return '<div class="forecast-num blank"></div>';
+      const s = state[type];
+      const selected = type==='auto' ? s.final.includes(num) : (type==='semi' ? (s.final.length ? s.final.includes(num) : s.selected.has(num)) : s.selected.has(num));
+      const excluded = type!=='manual' && s.excluded.has(num);
+      const conflict = type==='semi' && s.selected.has(num) && s.excluded.has(num);
+      const pending = type==='semi' && !s.final.length && s.selected.has(num);
+      const classes = ['forecast-num'];
+      if(idx % 7 === 0) classes.push('firstcol');
+      if(selected) classes.push('selected');
+      if(excluded) classes.push('excluded');
+      if(conflict) classes.push('conflict');
+      if(pending) classes.push('pending');
+
+      const badgeClass = getBucket(num);
+      let label = `<div class="forecast-num-badge ${badgeClass}">${num}</div>`;
+      if(type==='auto'){
+        if(excluded) label = `<span>${num}</span>`;
+        else if(!selected) label = `<span>${num}</span>`;
+      } else if(type==='semi'){
+        if(excluded && !selected) label = `<span>${num}</span>`;
+        else if(selected) label = `<div class="forecast-num-badge ${badgeClass}">${num}</div>`;
+        else label = `<span>${num}</span>`;
+      } else {
+        label = selected ? `<div class="forecast-num-badge ${badgeClass}">${num}</div>` : `<span>${num}</span>`;
+      }
+      return `<div class="${classes.join(' ')}" data-num="${num}">${label}</div>`;
+    }
+
+    function drawLines(svg, grid, numbers){
+      svg.innerHTML='';
+      if(!numbers || numbers.length < 2) return;
+      const sortedNums = [...numbers].sort((a,b)=>a-b);
+      const gridRect = grid.getBoundingClientRect();
+      const points = sortedNums.map(num => {
+        const cell = grid.querySelector(`[data-num="${num}"]`);
+        if(!cell) return null;
+        const rect = cell.getBoundingClientRect();
+        return {
+          x: ((rect.left + rect.width/2) - gridRect.left) / gridRect.width * 100,
+          y: ((rect.top + rect.height/2) - gridRect.top) / gridRect.height * 100
+        };
+      }).filter(Boolean);
+      if(points.length < 2) return;
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+      polyline.setAttribute('points', points.map(p=>`${p.x},${p.y}`).join(' '));
+      polyline.setAttribute('fill','none');
+      polyline.setAttribute('stroke','var(--mark-line)');
+      polyline.setAttribute('stroke-width','7.6');
+      polyline.setAttribute('opacity','0.98');
+      polyline.setAttribute('vector-effect','non-scaling-stroke');
+      polyline.setAttribute('stroke-linecap','round');
+      polyline.setAttribute('stroke-linejoin','round');
+      svg.appendChild(polyline);
+    }
+
+    function slipStateText(type, visibleNumbers){
+      if(type==='auto') return visibleNumbers.length ? '자동 생성 완료' : '생성 대기';
+      if(type==='semi') return state.semi.final.length ? '반자동 생성 완료' : (state.semi.selected.size ? '선택 후 생성 대기' : '선택 대기');
+      return visibleNumbers.length ? '수동 선택 중' : '선택 대기';
+    }
+
+    function setNotice(node, text){ node.textContent = text || ''; node.classList.toggle('show', !!text); }
+
+    function updateTexts(){
+      el.autoExcludedText.textContent = formatNums(sorted(state.auto.excluded));
+      el.autoStateText.textContent = state.auto.final.length ? '생성 버튼을 다시 누르면 제외수는 유지한 채 새 조합으로 바뀝니다.' : '제외수 설정 후 생성하거나 바로 생성할 수 있습니다.';
+      el.semiSelectedText.textContent = formatNums(sorted(state.semi.selected));
+      el.semiExcludedText.textContent = formatNums(sorted(state.semi.excluded));
+      el.manualSelectedText.textContent = formatNums(sorted(state.manual.selected));
+      el.manualStateText.textContent = state.manual.selected.size ? '선택수를 바꾸면 정보와 선이 즉시 갱신됩니다.' : '번호를 누르면 실시간으로 합계, 홀짝, AC값이 계산됩니다.';
+      setNotice(el.autoError, state.auto.error);
+      setNotice(el.semiError, state.semi.error);
+      setNotice(el.manualError, state.manual.error);
+      el.autoExMode.textContent = `제외수 설정 ${state.auto.excludeMode ? 'ON' : 'OFF'}`;
+      el.autoExMode.classList.toggle('active', state.auto.excludeMode);
+      el.semiExMode.textContent = `제외수 설정 ${state.semi.excludeMode ? 'ON' : 'OFF'}`;
+      el.semiExMode.classList.toggle('active', state.semi.excludeMode);
+    }
+
+    function renderSaved(){
+      if(!state.saved.length){
+        el.savedList.innerHTML = '<div class="saved-empty">저장된 번호가 없습니다.</div>';
+        return;
+      }
+      el.savedList.innerHTML = state.saved.map((nums, idx) => `
+        <div class="saved-item">
+          <div class="saved-idx">${idx+1}줄</div>
+          <div class="saved-nums">${nums.join(', ')}</div>
+          <button class="delete-saved" data-index="${idx}">×</button>
+        </div>
+      `).join('');
+      el.savedList.querySelectorAll('.delete-saved').forEach(btn => {
+        btn.addEventListener('click', ()=> deleteSaved(Number(btn.dataset.index)));
+      });
+    }
+
+    function render(){
+      updateTexts();
+      renderSlip(el.autoSlip, 'auto');
+      renderSlip(el.semiSlip, 'semi');
+      renderSlip(el.manualSlip, 'manual');
+      renderSaved();
+    }
+
+    function handleCellClick(type, num){
+      if(type==='auto'){
+        if(!state.auto.excludeMode) return;
+        toggleSet(state.auto.excluded, num);
+        clearAutoResult();
+        render();
+        return;
+      }
+      if(type==='semi'){
+        if(state.semi.excludeMode){
+          toggleSet(state.semi.excluded, num);
+          clearSemiResult(true);
+          state.semi.error = hasConflict() ? '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.' : '';
+        } else {
+          if(state.semi.selected.has(num)) {
+            state.semi.selected.delete(num);
+          } else {
+            if(state.semi.selected.size >= 5){
+              state.semi.error = '반자동은 최대 5개까지만 직접 선택할 수 있습니다.';
+              render();
+              return;
+            }
+            state.semi.selected.add(num);
+          }
+          clearSemiResult(true);
+          state.semi.error = hasConflict() ? '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.' : '';
+        }
+        render();
+        return;
+      }
+      if(type==='manual'){
+        if(state.manual.selected.has(num)) state.manual.selected.delete(num);
+        else {
+          if(state.manual.selected.size >= 6){
+            state.manual.error = '수동 용지는 최대 6개까지만 선택할 수 있습니다.';
+            render();
+            return;
+          }
+          state.manual.selected.add(num);
+        }
+        state.manual.error = '';
+        render();
+      }
+    }
+
+    function toggleSet(set, num){ if(set.has(num)) set.delete(num); else set.add(num); }
+    function hasConflict(){ return sorted(state.semi.selected).some(n => state.semi.excluded.has(n)); }
+
+    function generateAuto(){
+      state.auto.error='';
+      const pool = RANGE.filter(n => !state.auto.excluded.has(n));
+      if(pool.length < 6){
+        state.auto.error = '제외수를 적용하면 생성 가능한 숫자가 6개 미만입니다.';
+        render();
+        return;
+      }
+      state.auto.final = pickRandom(pool, 6);
+      render();
+    }
+
+    function generateSemi(){
+      state.semi.error='';
+      const selected = sorted(state.semi.selected);
+      if(selected.length === 0){
+        state.semi.error = '반자동은 번호를 1개 이상 선택해야 생성할 수 있습니다.';
+        render();
+        return;
+      }
+      if(hasConflict()){
+        state.semi.error = '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.';
+        render();
+        return;
+      }
+      const need = 6 - selected.length;
+      const pool = RANGE.filter(n => !state.semi.selected.has(n) && !state.semi.excluded.has(n));
+      if(pool.length < need){
+        state.semi.error = '제외수를 적용하면 생성 가능한 숫자가 부족합니다.';
+        render();
+        return;
+      }
+      state.semi.final = [...selected, ...pickRandom(pool, need)].sort((a,b)=>a-b);
+      render();
+    }
+
+    document.getElementById('auto-generate').addEventListener('click', generateAuto);
+    document.getElementById('auto-reset').addEventListener('click', ()=>{ clearAutoResult(); render(); });
+    document.getElementById('auto-ex-reset').addEventListener('click', ()=>{ state.auto.excluded.clear(); clearAutoResult(); render(); });
+    document.getElementById('auto-ex-mode').addEventListener('click', ()=>{ state.auto.excludeMode = !state.auto.excludeMode; render(); });
+
+    document.getElementById('semi-generate').addEventListener('click', generateSemi);
+    document.getElementById('semi-reset').addEventListener('click', ()=>{ state.semi.selected.clear(); clearSemiResult(); render(); });
+    document.getElementById('semi-ex-reset').addEventListener('click', ()=>{ state.semi.excluded.clear(); clearSemiResult(true); state.semi.error=''; render(); });
+    document.getElementById('semi-ex-mode').addEventListener('click', ()=>{ state.semi.excludeMode = !state.semi.excludeMode; render(); });
+
+    document.getElementById('manual-reset').addEventListener('click', ()=>{ clearManual(); render(); });
+    document.getElementById('saved-copy').addEventListener('click', (e)=>copySaved(e.currentTarget));
+    document.getElementById('saved-clear').addEventListener('click', clearSavedAll);
+
+    window.addEventListener('resize', render);
+    render();
+  </script>
+</body>
+</html>
