@@ -29,7 +29,7 @@
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#f8fbff 0%,var(--bg) 100%);color:var(--text);font-family:"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
     .app{max-width:860px;margin:0 auto;padding:18px 14px 42px}
-    .hero{background:linear-gradient(135deg,#1f3fff 0%,#4f75ff 100%);color:#fff;border-radius:24px;padding:20px 18px;box-shadow:0 20px 50px rgba(52,87,255,.22);margin-bottom:16px}
+    .hero{background:linear-gradient(135deg,#1f3fff 0%,#4f75ff 100%);color:#fff;border-radius:24px;padding:20px 18px;box-shadow:0 20px 50px rgba(52,87,255,.22);margin-bottom:14px}
     .hero h1{margin:0 0 8px;font-size:28px}
     .hero p{margin:0;line-height:1.6;font-size:14px;opacity:.97}
     .slip-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
@@ -85,8 +85,8 @@
     .forecast-line-layer{position:absolute;inset:0;pointer-events:none;z-index:4;width:100%;height:100%}
     .forecast-slip-info{margin-top:8px;border-top:3px solid var(--red);padding-top:8px;display:grid;gap:8px}
     .display-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:start}
-    .speech-box{position:relative;border:1px solid var(--line);border-radius:16px;padding:8px 10px;background:#fcfdff;min-height:62px}
-    .speech-box::after{content:"";position:absolute;left:18px;bottom:-8px;width:14px;height:14px;background:#fcfdff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+    .speech-box{position:relative;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:#fcfdff;min-height:62px}
+    .speech-box::after{display:none}
     .save-btn,.copy-btn{height:40px;padding:0 12px;border-radius:12px;align-self:center;white-space:nowrap}
     .save-btn{background:var(--save-green);color:#fff}
     .copy-btn{background:#eef4ff;color:#2740b6;border:1px solid #cfdaff}
@@ -112,9 +112,19 @@
     .saved-item{display:grid;grid-template-columns:40px 1fr 28px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #e8eef6}
     .saved-item:last-child{border-bottom:none}
     .saved-idx{color:var(--muted);font-weight:700}
-    .saved-nums{font-weight:800;font-size:15px;letter-spacing:-.2px}
+    .saved-nums{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .saved-ball{width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;letter-spacing:-.3px;box-shadow:0 3px 8px rgba(20,32,51,.10)}
+    .saved-ball.bucket1{background:#f2b01e;color:#fff}
+    .saved-ball.bucket2{background:#4a7df0;color:#fff}
+    .saved-ball.bucket3{background:#e35447;color:#fff}
+    .saved-ball.bucket4{background:#232a36;color:#fff}
+    .saved-ball.bucket5{background:#21a55b;color:#fff}
     .delete-saved{background:none;border:none;color:#15915a;font-size:18px;padding:0;width:28px;height:28px;border-radius:50%;border:1px solid #b7e3cb;display:flex;align-items:center;justify-content:center}
-    .save-note{margin-top:10px;font-size:12px;color:#5b6f86}
+    .list-date-partition{display:flex;align-items:center;gap:10px;padding:10px 0 8px}
+    .list-date-partition::before,.list-date-partition::after{content:"";flex:1;height:1px;background:#dfe7f2}
+    .list-date-label{font-size:12px;font-weight:800;color:#52627b;white-space:nowrap}
+    .scrollable{max-height:420px;overflow-y:auto}
+.save-note{margin-top:10px;font-size:12px;color:#5b6f86}
 
     @media (max-width:700px){
       .forecast-slip{width:min(100%,414px);padding:8px 6px 8px}
@@ -127,9 +137,56 @@
       .speech-box{min-height:56px}
       .save-btn,.copy-btn{width:auto;height:38px}
       .saved-head{flex-direction:column;align-items:stretch}
+      .saved-ball{width:36px;height:36px;font-size:16px}
+      .purchase-inline-buttons{gap:10px;right:4px;bottom:4px}
+      .purchase-inline-buttons .gen-btn{min-width:68px;height:42px;padding:0 12px;font-size:15px}
+      .purchase-item{grid-template-columns:40px 1fr 28px}
+      .stats-list{padding:10px;gap:8px}
+      .stats-item{min-height:68px;padding:6px 2px}
+      .stats-count{font-size:12px}
     }
   
-    .gen-btn{position:absolute;right:6px;bottom:6px;height:38px;padding:0 12px;border-radius:10px;background:#1f3fff;color:#fff;border:none;font-weight:800;z-index:9}
+    .gen-btn{position:absolute;right:6px;bottom:6px;min-width:72px;height:48px;padding:0 16px;border-radius:12px;background:#1f3fff;color:#fff;border:none;font-size:17px;font-weight:800;z-index:9;box-shadow:0 8px 18px rgba(31,63,255,.22)}
+
+  
+    .purchase-banner{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin:0 0 8px;overflow:hidden}
+    .purchase-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;color:var(--text);padding:16px 12px 16px 8px;border:none;border-radius:0;font-size:17px;font-weight:800;text-align:left}
+    .purchase-toggle > span:first-child{flex:1;display:block}
+    .purchase-toggle small{display:block;margin-top:4px;color:var(--muted);font-size:12px;font-weight:700}
+    .purchase-toggle .arrow{font-size:20px;color:#2740b6;transition:transform .2s ease}
+    .purchase-banner.open .purchase-toggle .arrow{transform:rotate(180deg)}
+    .purchase-content{display:none;padding:0 16px 16px}
+    .purchase-banner.open .purchase-content{display:block}
+    .purchase-topnote{font-size:12px;color:var(--muted);margin:2px 0 12px}
+    .purchase-slip-wrap{display:flex;justify-content:center}
+    .purchase-actions{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+    .purchase-inline-buttons{display:flex;gap:30px;position:absolute;right:6px;bottom:6px;z-index:10}
+    .purchase-inline-buttons .gen-btn{position:static;min-width:74px;height:46px;padding:0 14px}
+    .purchase-list-panel{margin-top:14px;border:1px solid var(--line);border-radius:18px;background:#f7f9fc;padding:12px}
+    .purchase-list-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+    .purchase-list-head h4{margin:0;font-size:16px}
+    .purchase-list-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .purchase-list{border:1px solid var(--line);border-radius:16px;background:#fff;padding:6px 12px}
+    .purchase-empty{padding:14px 4px;color:var(--muted);font-size:14px}
+    .purchase-item{display:grid;grid-template-columns:46px 1fr 28px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #e8eef6}
+    .purchase-item:last-child{border-bottom:none}
+    .purchase-idx{color:var(--muted);font-weight:700}
+    .purchase-balls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .purchase-delete{background:none;border:none;color:#15915a;font-size:18px;padding:0;width:28px;height:28px;border-radius:50%;border:1px solid #b7e3cb;display:flex;align-items:center;justify-content:center}
+    .stats-banner{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin:0 0 14px;overflow:hidden}
+    .stats-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;color:var(--text);padding:16px 12px 16px 8px;border:none;border-radius:0;font-size:17px;font-weight:800;text-align:left}
+    .stats-toggle > span:first-child{flex:1;display:block}
+    .stats-toggle small{display:block;margin-top:4px;color:var(--muted);font-size:12px;font-weight:700}
+    .stats-toggle .arrow{font-size:20px;color:#2740b6;transition:transform .2s ease}
+    .stats-banner.open .stats-toggle .arrow{transform:rotate(180deg)}
+    .stats-content{display:none;padding:0 16px 16px}
+    .stats-banner.open .stats-content{display:block}
+    .stats-topnote{font-size:12px;color:var(--muted);margin:2px 0 12px}
+    .stats-list{border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .stats-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:74px;padding:8px 4px;border:1px solid #e8eef6;border-radius:14px;background:#fcfdff}
+    .stats-item:last-child{border-bottom:1px solid #e8eef6}
+    .stats-count{font-size:13px;font-weight:800;color:var(--ok-text);text-align:center}
+
 
   </style>
 </head>
@@ -138,6 +195,44 @@
     <section class="hero">
       <h1>로또용지 3종 앱</h1>
       <p>위에서부터 자동, 반자동, 수동 용지입니다. 모바일에서는 아래로 스크롤하며 3장을 순서대로 볼 수 있습니다. 선 연결은 항상 오름차순 기준으로 이어지고, 자동/반자동의 제외수는 별도 초기화 버튼으로만 지워집니다.</p>
+    </section>
+
+    <section class="purchase-banner" id="purchase-banner">
+      <button class="purchase-toggle" id="purchase-toggle">
+        <span>
+          구매한 번호 기록
+          <small>접어서 숨기거나 펼쳐서 바로 기록할 수 있습니다.</small>
+        </span>
+        <span class="arrow">⌃</span>
+      </button>
+      <div class="purchase-content">
+        <div class="purchase-topnote">이 영역의 저장 목록은 앱을 껐다 켜도 유지됩니다.</div>
+        <div id="purchase-slip"></div>
+        <div class="purchase-list-panel">
+          <div class="purchase-list-head">
+            <h4>구매한 번호 목록</h4>
+            <div class="purchase-list-actions">
+              <button id="purchase-copy" class="secondary">복사</button>
+              <button id="purchase-clear" class="ghost">저장공간 비우기</button>
+            </div>
+          </div>
+          <div class="purchase-list" id="purchase-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-banner" id="purchase-stats-banner">
+      <button class="stats-toggle" id="purchase-stats-toggle">
+        <span>
+          구매번호 통계
+          <small>구매한 번호 목록을 기준으로 번호별 구매 횟수를 보여줍니다.</small>
+        </span>
+        <span class="arrow">⌃</span>
+      </button>
+      <div class="stats-content">
+        <div class="stats-topnote">구매 횟수 내림차순, 동률이면 번호 오름차순으로 정렬됩니다. 1~45 전체 번호가 모두 표시됩니다.</div>
+        <div class="stats-list" id="purchase-stats-list"></div>
+      </div>
     </section>
 
     <section class="slip-card" id="auto-card">
@@ -225,11 +320,14 @@
     const GRID_NUMBERS = [...RANGE, null, null, null, null];
 
     const STORAGE_KEY = 'lotto-slip-saved-v1';
+    const PURCHASE_STORAGE_KEY = 'lotto-slip-purchase-v1';
     const state = {
       auto: { excluded:new Set(), final:[], excludeMode:false, error:'' },
       semi: { selected:new Set(), excluded:new Set(), final:[], excludeMode:false, error:'' },
       manual: { selected:new Set(), error:'' },
-      saved: loadSaved()
+      purchase: { selected:new Set(), error:'' },
+      saved: loadSaved(),
+      purchaseSaved: loadPurchaseSaved()
     };
 
     const el = {
@@ -249,7 +347,14 @@
       manualError: document.getElementById('manual-error'),
       autoExMode: document.getElementById('auto-ex-mode'),
       semiExMode: document.getElementById('semi-ex-mode'),
-      savedList: document.getElementById('saved-list')
+      savedList: document.getElementById('saved-list'),
+      purchaseSlip: document.getElementById('purchase-slip'),
+      purchaseList: document.getElementById('purchase-list'),
+      purchaseToggle: document.getElementById('purchase-toggle'),
+      purchaseBanner: document.getElementById('purchase-banner'),
+      purchaseStatsList: document.getElementById('purchase-stats-list'),
+      purchaseStatsToggle: document.getElementById('purchase-stats-toggle'),
+      purchaseStatsBanner: document.getElementById('purchase-stats-banner')
     };
 
     function sorted(arrOrSet){ return Array.from(arrOrSet).sort((a,b)=>a-b); }
@@ -283,19 +388,49 @@
       return arr;
     }
     function pickRandom(pool, count){ return shuffle(pool).slice(0,count).sort((a,b)=>a-b); }
+    function normalizeStoredItems(parsed){
+      if(!Array.isArray(parsed)) return [];
+      return parsed.map(item => {
+        if(Array.isArray(item) && item.length===6){
+          return { nums:[...item].sort((a,b)=>a-b), createdAt:null };
+        }
+        if(item && Array.isArray(item.nums) && item.nums.length===6){
+          return { nums:[...item.nums].sort((a,b)=>a-b), createdAt:item.createdAt || null };
+        }
+        return null;
+      }).filter(Boolean);
+    }
     function loadSaved(){
       try {
-        const raw = sessionStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY);
         const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed.filter(item => Array.isArray(item) && item.length===6) : [];
+        return normalizeStoredItems(parsed);
       } catch(e){ return []; }
     }
     function persistSaved(){
-      try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state.saved)); } catch(e) {}
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.saved)); } catch(e) {}
+    }
+    function loadPurchaseSaved(){
+      try {
+        const raw = localStorage.getItem(PURCHASE_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return normalizeStoredItems(parsed);
+      } catch(e){ return []; }
+    }
+    function persistPurchaseSaved(){
+      try { localStorage.setItem(PURCHASE_STORAGE_KEY, JSON.stringify(state.purchaseSaved)); } catch(e) {}
+    }
+    function savePurchaseCombination(nums){
+      if(!nums || nums.length !== 6) return false;
+      state.purchaseSaved.push({ nums:[...nums].sort((a,b)=>a-b), createdAt:new Date().toISOString() });
+      persistPurchaseSaved();
+      renderPurchaseSaved();
+      renderPurchaseStats();
+      return true;
     }
     function saveCombination(nums){
       if(!nums || nums.length !== 6) return false;
-      state.saved.push([...nums].sort((a,b)=>a-b));
+      state.saved.push({ nums:[...nums].sort((a,b)=>a-b), createdAt:new Date().toISOString() });
       persistSaved();
       renderSaved();
       return true;
@@ -323,7 +458,7 @@
       }
     }
     async function copySaved(button){
-      const text = state.saved.map(nums => nums.join(', ')).join('\n');
+      const text = state.saved.map(item => item.nums.join(', ')).join('\n');
       if(!text) return;
       await writeClipboard(text);
       flashButton(button, '복사');
@@ -348,6 +483,9 @@
       if(!keepError) state.semi.error='';
     }
     function clearManual(){ state.manual.selected.clear(); state.manual.error=''; }
+    function clearPurchase(){ state.purchase.selected.clear(); state.purchase.error=''; }
+    function deletePurchaseSaved(index){ state.purchaseSaved.splice(index,1); persistPurchaseSaved(); renderPurchaseSaved(); renderPurchaseStats(); }
+    function clearPurchaseSavedAll(){ state.purchaseSaved = []; persistPurchaseSaved(); renderPurchaseSaved(); renderPurchaseStats(); }
 
     function renderSlip(target, type){
       const s = state[type];
@@ -361,7 +499,7 @@
         <div class="forecast-slip-shell">
           <div class="forecast-slip">
             <div class="forecast-slip-grid-wrap">
-              <button class="gen-btn" data-action="generate">생성</button>
+              <button class="gen-btn" data-action="inline-main">${type==='manual' ? '초기화' : '생성'}</button>
               <svg class="forecast-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
               <div class="forecast-slip-grid">
                 ${GRID_NUMBERS.map((n, idx) => makeCell(type, n, idx)).join('')}
@@ -403,10 +541,13 @@
         flashButton(copyBtn, '복사');
       });
       
-      const genBtn = target.querySelector('[data-action="generate"]');
+      const genBtn = target.querySelector('[data-action="inline-main"]');
       if(genBtn){
-        if(type==='manual'){ genBtn.style.display='none'; }
-        genBtn.addEventListener('click', ()=>{ if(type==='auto') generateAuto(); else if(type==='semi') generateSemi(); });
+        genBtn.addEventListener('click', ()=>{
+          if(type==='auto') generateAuto();
+          else if(type==='semi') generateSemi();
+          else if(type==='manual'){ clearManual(); render(); }
+        });
       }
       drawLines(target.querySelector('.forecast-line-layer'), grid, visibleNumbers);
     
@@ -475,6 +616,21 @@
     }
 
     function setNotice(node, text){ node.textContent = text || ''; node.classList.toggle('show', !!text); }
+    function formatPartitionDate(iso){
+      if(!iso) return '기존 저장 항목';
+      const d = new Date(iso);
+      if(Number.isNaN(d.getTime())) return '기존 저장 항목';
+      return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 생성`;
+    }
+    function getPartitionKey(iso){
+      if(!iso) return 'legacy';
+      const d = new Date(iso);
+      if(Number.isNaN(d.getTime())) return 'legacy';
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
 
     function updateTexts(){
       el.autoExcludedText.textContent = formatNums(sorted(state.auto.excluded));
@@ -497,13 +653,21 @@
         el.savedList.innerHTML = '<div class="saved-empty">저장된 번호가 없습니다.</div>';
         return;
       }
-      el.savedList.innerHTML = state.saved.map((nums, idx) => `
+      let lastPartition = '';
+      el.savedList.classList.toggle('scrollable', state.saved.length>20);
+      el.savedList.innerHTML = state.saved.map((item, idx) => {
+        const partitionKey = getPartitionKey(item.createdAt);
+        const partition = partitionKey !== lastPartition
+          ? `<div class="list-date-partition"><span class="list-date-label">${formatPartitionDate(item.createdAt)}</span></div>`
+          : '';
+        lastPartition = partitionKey;
+        return `${partition}
         <div class="saved-item">
           <div class="saved-idx">${idx+1}줄</div>
-          <div class="saved-nums">${nums.join(', ')}</div>
+          <div class="saved-nums">${item.nums.map(num => `<span class="saved-ball ${getBucket(num)}">${num}</span>`).join('')}</div>
           <button class="delete-saved" data-index="${idx}">×</button>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
       el.savedList.querySelectorAll('.delete-saved').forEach(btn => {
         btn.addEventListener('click', ()=> deleteSaved(Number(btn.dataset.index)));
       });
@@ -511,10 +675,110 @@
 
     function render(){
       updateTexts();
+      renderPurchaseSlip();
       renderSlip(el.autoSlip, 'auto');
       renderSlip(el.semiSlip, 'semi');
       renderSlip(el.manualSlip, 'manual');
       renderSaved();
+      renderPurchaseSaved();
+      renderPurchaseStats();
+    }
+
+    function renderPurchaseSlip(){
+      const visibleNumbers = sorted(state.purchase.selected);
+      el.purchaseSlip.innerHTML = `
+        <div class="purchase-slip-wrap">
+          <div class="forecast-slip">
+            <div class="forecast-slip-grid-wrap">
+              <div class="purchase-inline-buttons">
+                <button class="gen-btn save-btn" data-action="purchase-save">저장</button>
+                <button class="gen-btn secondary" data-action="purchase-reset">초기화</button>
+              </div>
+              <svg class="forecast-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+              <div class="forecast-slip-grid">
+                ${GRID_NUMBERS.map((n, idx) => {
+                  if(!n) return '<div class="forecast-num blank"></div>';
+                  const selected = state.purchase.selected.has(n);
+                  const badgeClass = getBucket(n);
+                  const label = selected ? `<div class="forecast-num-badge ${badgeClass}">${n}</div>` : `<span>${n}</span>`;
+                  return `<div class="forecast-num ${selected ? 'selected' : ''}" data-purchase-num="${n}">${label}</div>`;
+                }).join('')}
+              </div>
+            </div>
+            <div class="forecast-slip-info">
+              <div class="display-row">
+                <div class="speech-box">
+                  <div class="k">선택 번호</div>
+                  <div class="v">${formatNums(visibleNumbers)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      const grid = el.purchaseSlip.querySelector('.forecast-slip-grid');
+      grid.querySelectorAll('.forecast-num[data-purchase-num]').forEach(node => {
+        node.addEventListener('click', () => handlePurchaseCellClick(Number(node.dataset.purchaseNum)));
+      });
+      el.purchaseSlip.querySelector('[data-action="purchase-save"]').addEventListener('click', (e)=>{
+        if(visibleNumbers.length !== 6) return;
+        if(savePurchaseCombination(visibleNumbers)) flashButton(e.currentTarget, '저장');
+      });
+      el.purchaseSlip.querySelector('[data-action="purchase-reset"]').addEventListener('click', ()=>{ clearPurchase(); renderPurchaseSlip(); });
+      drawLines(el.purchaseSlip.querySelector('.forecast-line-layer'), grid, visibleNumbers);
+    }
+
+    function renderPurchaseSaved(){
+      if(!state.purchaseSaved.length){
+        el.purchaseList.innerHTML = '<div class="purchase-empty">저장된 구매 번호가 없습니다.</div>';
+        return;
+      }
+      let lastPartition = '';
+      el.purchaseList.classList.toggle('scrollable', state.purchaseSaved.length>20);
+      el.purchaseList.innerHTML = state.purchaseSaved.map((item, idx) => {
+        const partitionKey = getPartitionKey(item.createdAt);
+        const partition = partitionKey !== lastPartition
+          ? `<div class="list-date-partition"><span class="list-date-label">${formatPartitionDate(item.createdAt)}</span></div>`
+          : '';
+        lastPartition = partitionKey;
+        return `${partition}
+        <div class="purchase-item">
+          <div class="purchase-idx">${idx+1}줄</div>
+          <div class="purchase-balls">${item.nums.map(num => `<span class="saved-ball ${getBucket(num)}">${num}</span>`).join('')}</div>
+          <button class="purchase-delete" data-pindex="${idx}">×</button>
+        </div>`;
+      }).join('');
+      el.purchaseList.querySelectorAll('.purchase-delete').forEach(btn => {
+        btn.addEventListener('click', ()=> deletePurchaseSaved(Number(btn.dataset.pindex)));
+      });
+    }
+
+
+    function getPurchaseStatsData(){
+      const counts = new Map(RANGE.map(n => [n, 0]));
+      state.purchaseSaved.forEach(item => {
+        item.nums.forEach(num => counts.set(num, (counts.get(num) || 0) + 1));
+      });
+      return RANGE.map(num => ({ num, count: counts.get(num) || 0 }))
+        .sort((a,b) => (b.count - a.count) || (a.num - b.num));
+    }
+
+    function renderPurchaseStats(){
+      const stats = getPurchaseStatsData();
+      el.purchaseStatsList.innerHTML = stats.map(item => `
+        <div class="stats-item">
+          <div class="saved-ball ${getBucket(item.num)}">${item.num}</div>
+          <div class="stats-count">${item.count}회</div>
+        </div>
+      `).join('');
+    }
+
+    function handlePurchaseCellClick(num){
+      if(state.purchase.selected.has(num)) state.purchase.selected.delete(num);
+      else {
+        if(state.purchase.selected.size >= 6) return;
+        state.purchase.selected.add(num);
+      }
+      renderPurchaseSlip();
     }
 
     function handleCellClick(type, num){
@@ -614,6 +878,19 @@
     document.getElementById('manual-reset').addEventListener('click', ()=>{ clearManual(); render(); });
     document.getElementById('saved-copy').addEventListener('click', (e)=>copySaved(e.currentTarget));
     document.getElementById('saved-clear').addEventListener('click', clearSavedAll);
+    document.getElementById('purchase-copy').addEventListener('click', async (e)=>{
+      const text = state.purchaseSaved.map(item => item.nums.join(', ')).join('\n');
+      if(!text) return;
+      await writeClipboard(text);
+      flashButton(e.currentTarget, '복사');
+    });
+    document.getElementById('purchase-clear').addEventListener('click', clearPurchaseSavedAll);
+    el.purchaseToggle.addEventListener('click', ()=>{
+      el.purchaseBanner.classList.toggle('open');
+    });
+    el.purchaseStatsToggle.addEventListener('click', ()=>{
+      el.purchaseStatsBanner.classList.toggle('open');
+    });
 
     window.addEventListener('resize', render);
     render();
