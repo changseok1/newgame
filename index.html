@@ -150,7 +150,7 @@
       .stats-count{font-size:12px}
     }
   
-    .gen-btn{position:absolute;right:6px;bottom:6px;min-width:72px;height:48px;padding:0 16px;border-radius:12px;background:#1f3fff;color:#fff;border:none;font-size:17px;font-weight:800;z-index:9;box-shadow:0 8px 18px rgba(31,63,255,.22)}
+    .gen-btn{position:absolute;right:6px;bottom:6px;min-width:64px;height:42px;padding:0 12px;border-radius:12px;background:#1f3fff;color:#fff;border:none;font-size:15px;font-weight:800;z-index:9;box-shadow:0 6px 14px rgba(31,63,255,.20)}
 
   
     .purchase-banner{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin:0 0 10px;overflow:hidden}
@@ -164,8 +164,8 @@
     .purchase-topnote{font-size:12px;color:var(--muted);margin:2px 0 12px}
     .purchase-slip-wrap{display:flex;justify-content:center}
     .purchase-actions{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
-    .purchase-inline-buttons{display:flex;gap:30px;position:absolute;right:6px;bottom:6px;z-index:10}
-    .purchase-inline-buttons .gen-btn{position:static;min-width:74px;height:46px;padding:0 14px}
+    .purchase-inline-buttons{display:flex;gap:16px;position:absolute;right:4px;bottom:4px;z-index:10}
+    .purchase-inline-buttons .gen-btn{position:static;min-width:62px;height:38px;padding:0 10px;font-size:14px}
     .purchase-list-panel{margin-top:14px;border:1px solid var(--line);border-radius:18px;background:#f7f9fc;padding:12px}
     .purchase-list-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
     .purchase-list-head h4{margin:0;font-size:16px}
@@ -192,13 +192,49 @@
     .stats-count{font-size:13px;font-weight:800;color:var(--ok-text);text-align:center}
 
 
+  
+    .custom-stat{cursor:pointer}
+    .custom-settings-panel{margin-top:8px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px}
+    .custom-settings-title{font-size:13px;font-weight:800;margin-bottom:10px}
+    .seg-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .seg-btn{height:36px;padding:0 12px;border-radius:10px;background:#fff;border:1px solid var(--line);color:var(--text);font-weight:800}
+    .seg-btn.active{background:#edf2ff;border-color:#cfdaff;color:#2740b6}
+    .custom-range{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .custom-range input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font:inherit}
+    .check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .check-chip{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fcfdff;font-size:13px;font-weight:700}
+    .check-chip input{margin:0}
+    .condition-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
+    .custom-result{color:var(--blue)}
+    .custom-cond{color:inherit}
+
+  
+    .accordion-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+    .accordion-toggle{width:100%;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#fff;color:var(--text);padding:16px;border:none;border-radius:0;text-align:left}
+    .accordion-toggle .left h2{margin:0;font-size:20px}
+    .accordion-toggle .left p{margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+    .accordion-toggle .badge{flex:0 0 auto}
+    .accordion-arrow{font-size:20px;color:#2740b6;transition:transform .2s ease;margin-left:auto}
+    .accordion-card.open .accordion-arrow{transform:rotate(180deg)}
+    .accordion-content{display:none;padding:16px}
+    .accordion-card.open .accordion-content{display:block}
+    @media (max-width:700px){
+      .accordion-toggle{padding:14px}
+      .accordion-toggle .left h2{font-size:18px}
+    }
+
   </style>
 </head>
 <body>
   <div class="app">
     <section class="hero">
-      <h1>1등 번호 조합을 찾아서..</h1>
-      <p>made by 李水鎭.</p>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div>
+          <h1>로또용지 3종 앱</h1>
+          <p>위에서부터 자동, 반자동, 수동 용지입니다. 모바일에서는 아래로 스크롤하며 3장을 순서대로 볼 수 있습니다. 선 연결은 항상 오름차순 기준으로 이어지고, 자동/반자동의 제외수는 별도 초기화 버튼으로만 지워집니다.</p>
+        </div>
+        <button id="open-custom-screen" class="secondary" style="height:42px;white-space:nowrap">커스텀 생성</button>
+      </div>
     </section>
 
     <section class="purchase-banner" id="purchase-banner">
@@ -238,16 +274,18 @@
         <div class="stats-list" id="purchase-stats-list"></div>
       </div>
     </section>
-
-    <section class="slip-card" id="auto-card">
-      <div class="slip-head">
-        <div>
+    <section class="accordion-card" id="auto-accordion">
+      <button class="accordion-toggle" data-accordion="auto">
+        <div class="left">
           <h2>자동 로또용지</h2>
           <p>번호를 직접 선택하지 않고 생성합니다. 제외수 설정 후 생성하면 제외된 숫자를 빼고 6개가 랜덤 생성됩니다.</p>
         </div>
         <div class="badge">1번 용지 · 자동</div>
-      </div>
-      <div class="tool-row">
+        <span class="accordion-arrow">⌃</span>
+      </button>
+      <div class="accordion-content">
+        <section class="slip-card" id="auto-card">
+<div class="tool-row">
         <button id="auto-generate">생성</button>
         <button id="auto-reset" class="secondary">초기화</button>
         <button id="auto-ex-reset" class="ghost">제외수 초기화</button>
@@ -261,17 +299,21 @@
       <div class="notice info show" id="auto-info">자동 용지는 제외수 설정 모드일 때만 번호 클릭이 가능합니다.</div>
       <div id="auto-slip"></div>
       <div class="hint">초기화는 생성결과만 지우고 제외수는 유지합니다.</div>
+        </section>
+      </div>
     </section>
-
-    <section class="slip-card" id="semi-card">
-      <div class="slip-head">
-        <div>
+    <section class="accordion-card" id="semi-accordion">
+      <button class="accordion-toggle" data-accordion="semi">
+        <div class="left">
           <h2>반자동 로또용지</h2>
           <p>원하는 번호 1~5개를 직접 선택하고 생성하면 나머지 숫자만 자동으로 채워집니다. 선택수와 제외수가 겹치면 경고 후 생성되지 않습니다.</p>
         </div>
         <div class="badge">2번 용지 · 반자동</div>
-      </div>
-      <div class="tool-row">
+        <span class="accordion-arrow">⌃</span>
+      </button>
+      <div class="accordion-content">
+        <section class="slip-card" id="semi-card">
+<div class="tool-row">
         <button id="semi-generate">생성</button>
         <button id="semi-reset" class="secondary">초기화</button>
         <button id="semi-ex-reset" class="ghost">제외수 초기화</button>
@@ -285,17 +327,21 @@
       <div class="notice info show" id="semi-info">기본 클릭은 선택수 입력입니다. 제외수 설정 모드를 켜면 같은 번호판에서 제외수를 입력합니다.</div>
       <div id="semi-slip"></div>
       <div class="hint">초기화는 선택수와 생성결과를 지우고, 제외수는 유지합니다.</div>
+        </section>
+      </div>
     </section>
-
-    <section class="slip-card" id="manual-card">
-      <div class="slip-head">
-        <div>
+    <section class="accordion-card" id="manual-accordion">
+      <button class="accordion-toggle" data-accordion="manual">
+        <div class="left">
           <h2>수동 로또용지</h2>
           <p>원하는 숫자를 직접 찍어보고 조합 정보를 확인하는 용지입니다. 생성 버튼은 없고 최대 6개까지 직접 선택할 수 있습니다.</p>
         </div>
         <div class="badge">3번 용지 · 수동</div>
-      </div>
-      <div class="tool-row">
+        <span class="accordion-arrow">⌃</span>
+      </button>
+      <div class="accordion-content">
+        <section class="slip-card" id="manual-card">
+<div class="tool-row">
         <button id="manual-reset" class="secondary">초기화</button>
       </div>
       <div class="meta-row">
@@ -304,6 +350,8 @@
       </div>
       <div class="notice error" id="manual-error"></div>
       <div id="manual-slip"></div>
+        </section>
+      </div>
     </section>
 
     <section class="saved-panel">
@@ -317,6 +365,85 @@
       <div class="saved-list" id="saved-list"></div>
       <div class="save-note">저장 버튼으로 누적 저장하고, 복사 버튼으로 저장된 조합 전체를 클립보드에 복사할 수 있습니다.</div>
     </section>
+
+    <section id="custom-screen" style="display:none">
+      <section class="hero">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>커스텀 생성</h1>
+            <p>이 화면은 커스텀 자동/반자동 기능을 위한 전용 화면입니다. 합계, 홀짝, AC값 조건을 설정해 생성할 수 있습니다.</p>
+          </div>
+          <button id="close-custom-screen" class="secondary" style="height:42px;white-space:nowrap">돌아가기</button>
+        </div>
+      </section>
+    <section class="accordion-card" id="custom-auto-accordion">
+      <button class="accordion-toggle" data-accordion="custom-auto">
+        <div class="left">
+          <h2>커스텀 자동 용지</h2>
+          <p>합계, 홀짝, AC값 조건을 지정해 자동 생성합니다. 제외수 설정 후 조건 생성도 가능합니다.</p>
+        </div>
+        <div class="badge">커스텀 · 자동</div>
+        <span class="accordion-arrow">⌃</span>
+      </button>
+      <div class="accordion-content">
+        <section class="slip-card" id="custom-auto-card">
+<div class="tool-row">
+          <button id="custom-auto-generate">생성</button>
+          <button id="custom-auto-reset" class="secondary">초기화</button>
+          <button id="custom-auto-ex-reset" class="ghost">제외수 초기화</button>
+          <button id="custom-auto-ex-mode" class="warn">제외수 설정 OFF</button>
+        </div>
+        <div class="meta-row">
+          <div class="mini-box"><div class="k">제외수</div><div class="v" id="custom-auto-excluded-text">없음</div></div>
+          <div class="mini-box"><div class="k">조건 상태</div><div class="v" id="custom-auto-state-text">합계 / 홀짝 / AC값을 눌러 자동 또는 커스텀 조건을 설정하세요.</div></div>
+        </div>
+        <div class="notice error" id="custom-auto-error"></div>
+        <div class="notice info show" id="custom-auto-info">커스텀 자동 용지는 제외수 설정 모드일 때만 번호 클릭이 가능합니다.</div>
+        <div id="custom-auto-slip"></div>
+        </section>
+      </div>
+    </section>
+    <section class="accordion-card" id="custom-semi-accordion">
+      <button class="accordion-toggle" data-accordion="custom-semi">
+        <div class="left">
+          <h2>커스텀 반자동 용지</h2>
+          <p>포함수와 제외수를 함께 사용하면서 합계, 홀짝, AC값 조건을 만족하는 조합을 생성합니다.</p>
+        </div>
+        <div class="badge">커스텀 · 반자동</div>
+        <span class="accordion-arrow">⌃</span>
+      </button>
+      <div class="accordion-content">
+        <section class="slip-card" id="custom-semi-card">
+<div class="tool-row">
+          <button id="custom-semi-generate">생성</button>
+          <button id="custom-semi-reset" class="secondary">초기화</button>
+          <button id="custom-semi-ex-reset" class="ghost">제외수 초기화</button>
+          <button id="custom-semi-ex-mode" class="warn">제외수 설정 OFF</button>
+        </div>
+        <div class="meta-row">
+          <div class="mini-box"><div class="k">선택수</div><div class="v" id="custom-semi-selected-text">없음</div></div>
+          <div class="mini-box"><div class="k">제외수</div><div class="v" id="custom-semi-excluded-text">없음</div></div>
+        </div>
+        <div class="notice error" id="custom-semi-error"></div>
+        <div class="notice info show" id="custom-semi-info">기본 클릭은 선택수 입력입니다. 제외수 설정 모드를 켜면 같은 번호판에서 제외수를 입력합니다.</div>
+        <div id="custom-semi-slip"></div>
+        </section>
+      </div>
+    </section>
+
+      <section class="saved-panel" id="custom-saved-panel">
+        <div class="saved-head">
+          <h3>커스텀 저장공간</h3>
+          <div class="saved-actions">
+            <button id="custom-saved-copy" class="secondary">복사</button>
+            <button id="custom-saved-clear" class="ghost">저장공간 초기화</button>
+          </div>
+        </div>
+        <div class="saved-list" id="custom-saved-list"></div>
+        <div class="save-note">커스텀 자동 / 반자동 용지에서 저장한 조합만 여기에 누적 저장됩니다.</div>
+      </section>
+    </section>
+
   </div>
 
   <script>
@@ -325,13 +452,65 @@
 
     const STORAGE_KEY = 'lotto-slip-saved-v1';
     const PURCHASE_STORAGE_KEY = 'lotto-slip-purchase-v1';
+    const CUSTOM_STORAGE_KEY = 'lotto-custom-saved-v1';
+    function defaultCriteria(){
+      return {
+        sumMode:'auto', sumMin:21, sumMax:255,
+        oddMode:'auto', oddAllowed:new Set(),
+        acMode:'auto', acAllowed:new Set(),
+        openPanel:null
+      };
+    }
+
+    const ACCORDION_STATE_KEY = 'lotto-accordion-state-v1';
+    function loadAccordionState(){
+      try{
+        const raw = localStorage.getItem(ACCORDION_STATE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return parsed && typeof parsed === 'object' ? parsed : {
+          auto:false, semi:false, manual:false, 'custom-auto':false, 'custom-semi':false
+        };
+      }catch(e){
+        return { auto:false, semi:false, manual:false, 'custom-auto':false, 'custom-semi':false };
+      }
+    }
+    function persistAccordionState(){
+      try{ localStorage.setItem(ACCORDION_STATE_KEY, JSON.stringify(state.accordions)); }catch(e){}
+    }
+    function setAccordionOpen(name, isOpen){
+      state.accordions[name] = isOpen;
+      persistAccordionState();
+      document.querySelectorAll(`[data-accordion="${name}"]`).forEach(btn=>{
+        const card = btn.closest('.accordion-card');
+        if(card) card.classList.toggle('open', isOpen);
+      });
+    }
+    function bindAccordions(){
+      document.querySelectorAll('[data-accordion]').forEach(btn=>{
+        if(btn.dataset.boundAccordion === '1') return;
+        btn.dataset.boundAccordion = '1';
+        const name = btn.dataset.accordion;
+        const isOpen = !!state.accordions[name];
+        const card = btn.closest('.accordion-card');
+        if(card) card.classList.toggle('open', isOpen);
+        btn.addEventListener('click', ()=>{
+          setAccordionOpen(name, !state.accordions[name]);
+        });
+      });
+    }
+
     const state = {
       auto: { excluded:new Set(), final:[], excludeMode:false, error:'' },
       semi: { selected:new Set(), excluded:new Set(), final:[], excludeMode:false, error:'' },
       manual: { selected:new Set(), error:'' },
       purchase: { selected:new Set(), error:'' },
+      customAuto: { excluded:new Set(), final:[], excludeMode:false, error:'', criteria: defaultCriteria() },
+      customSemi: { selected:new Set(), excluded:new Set(), final:[], excludeMode:false, error:'', criteria: defaultCriteria() },
+      currentScreen: 'main',
+      accordions: loadAccordionState(),
       saved: loadSaved(),
-      purchaseSaved: loadPurchaseSaved()
+      purchaseSaved: loadPurchaseSaved(),
+      customSaved: loadCustomSaved()
     };
 
     const el = {
@@ -358,7 +537,18 @@
       purchaseBanner: document.getElementById('purchase-banner'),
       purchaseStatsList: document.getElementById('purchase-stats-list'),
       purchaseStatsToggle: document.getElementById('purchase-stats-toggle'),
-      purchaseStatsBanner: document.getElementById('purchase-stats-banner')
+      purchaseStatsBanner: document.getElementById('purchase-stats-banner'),
+      customAutoSlip: document.getElementById('custom-auto-slip'),
+      customAutoExcludedText: document.getElementById('custom-auto-excluded-text'),
+      customAutoStateText: document.getElementById('custom-auto-state-text'),
+      customAutoError: document.getElementById('custom-auto-error'),
+      customAutoExMode: document.getElementById('custom-auto-ex-mode'),
+      customSemiSlip: document.getElementById('custom-semi-slip'),
+      customSemiSelectedText: document.getElementById('custom-semi-selected-text'),
+      customSemiExcludedText: document.getElementById('custom-semi-excluded-text'),
+      customSemiError: document.getElementById('custom-semi-error'),
+      customSemiExMode: document.getElementById('custom-semi-ex-mode'),
+      customSavedList: document.getElementById('custom-saved-list')
     };
 
     function sorted(arrOrSet){ return Array.from(arrOrSet).sort((a,b)=>a-b); }
@@ -423,6 +613,23 @@
     }
     function persistPurchaseSaved(){
       try { localStorage.setItem(PURCHASE_STORAGE_KEY, JSON.stringify(state.purchaseSaved)); } catch(e) {}
+    }
+    function loadCustomSaved(){
+      try {
+        const raw = localStorage.getItem(CUSTOM_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return normalizeStoredItems(parsed);
+      } catch(e){ return []; }
+    }
+    function persistCustomSaved(){
+      try { localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(state.customSaved)); } catch(e) {}
+    }
+    function saveCustomCombination(nums){
+      if(!nums || nums.length !== 6) return false;
+      state.customSaved.push({ nums:[...nums].sort((a,b)=>a-b), createdAt:new Date().toISOString() });
+      persistCustomSaved();
+      renderCustomSaved();
+      return true;
     }
     function savePurchaseCombination(nums){
       if(!nums || nums.length !== 6) return false;
@@ -650,6 +857,553 @@
       el.autoExMode.classList.toggle('active', state.auto.excludeMode);
       el.semiExMode.textContent = `제외수 설정 ${state.semi.excludeMode ? 'ON' : 'OFF'}`;
       el.semiExMode.classList.toggle('active', state.semi.excludeMode);
+      el.customAutoExcludedText.textContent = formatNums(sorted(state.customAuto.excluded));
+      el.customAutoStateText.textContent = customSummaryText(state.customAuto.criteria);
+      setNotice(el.customAutoError, state.customAuto.error);
+      el.customAutoExMode.textContent = `제외수 설정 ${state.customAuto.excludeMode ? 'ON' : 'OFF'}`;
+      el.customAutoExMode.classList.toggle('active', state.customAuto.excludeMode);
+      if(el.customSemiSelectedText) el.customSemiSelectedText.textContent = formatNums(sorted(state.customSemi.selected));
+      if(el.customSemiExcludedText) el.customSemiExcludedText.textContent = formatNums(sorted(state.customSemi.excluded));
+      if(el.customSemiError) setNotice(el.customSemiError, state.customSemi.error);
+      if(el.customSemiExMode){
+        el.customSemiExMode.textContent = `제외수 설정 ${state.customSemi.excludeMode ? 'ON' : 'OFF'}`;
+        el.customSemiExMode.classList.toggle('active', state.customSemi.excludeMode);
+      }
+    }
+
+
+    function clearCustomAutoResult(keepError=false){
+      state.customAuto.final = [];
+      if(!keepError) state.customAuto.error = '';
+    }
+    function clearCustomSemiResult(keepError=false){
+      state.customSemi.final = [];
+      if(!keepError) state.customSemi.error = '';
+    }
+    function customCriteriaFor(type){
+      return type==='customAuto' ? state.customAuto.criteria : state.customSemi.criteria;
+    }
+    function customOddAllowedText(set){
+      return [...set].sort((a,b)=>{
+        const [ao,ae]=a.split(':').map(Number);
+        const [bo,be]=b.split(':').map(Number);
+        return ao-bo || ae-be;
+      }).join(', ');
+    }
+    function customSummaryTextByType(type){
+      const criteria = customCriteriaFor(type);
+      const sumText = criteria.sumMode==='auto' ? '합계 자동' : `합계 ${criteria.sumMin}~${criteria.sumMax}`;
+      const oddText = criteria.oddMode==='auto' ? '홀짝 자동' : `홀짝 ${customOddAllowedText(criteria.oddAllowed)}`;
+      const acText = criteria.acMode==='auto' ? 'AC 자동' : `AC ${[...criteria.acAllowed].sort((a,b)=>a-b).join(', ')}`;
+      return `${sumText} / ${oddText} / ${acText}`;
+    }
+    function customSummaryText(criteria){
+      const sumText = criteria.sumMode==='auto' ? '합계 자동' : `합계 ${criteria.sumMin}~${criteria.sumMax}`;
+      const oddText = criteria.oddMode==='auto' ? '홀짝 자동' : `홀짝 ${customOddAllowedText(criteria.oddAllowed)}`;
+      const acText = criteria.acMode==='auto' ? 'AC 자동' : `AC ${[...criteria.acAllowed].sort((a,b)=>a-b).join(', ')}`;
+      return `${sumText} / ${oddText} / ${acText}`;
+    }
+    function oddEvenKey(nums){
+      const odd = nums.filter(n=>n%2===1).length;
+      return `${odd}:${nums.length-odd}`;
+    }
+    function validateCriteria(criteria){
+      if(criteria.sumMode==='custom'){
+        const min = Number(criteria.sumMin);
+        const max = Number(criteria.sumMax);
+        if(Number.isNaN(min) || Number.isNaN(max) || min > max){
+          return '합계 최소값과 최대값을 올바르게 입력하세요.';
+        }
+      }
+      if(criteria.oddMode==='custom' && criteria.oddAllowed.size===0) return '홀짝 비율을 1개 이상 선택하세요.';
+      if(criteria.acMode==='custom' && criteria.acAllowed.size===0) return 'AC값을 1개 이상 선택하세요.';
+      return '';
+    }
+    function criteriaMatch(nums, criteria){
+      const stats = calcStats(nums);
+      if(criteria.sumMode==='custom'){
+        const min = Number(criteria.sumMin);
+        const max = Number(criteria.sumMax);
+        if(stats.sum < min || stats.sum > max) return false;
+      }
+      if(criteria.oddMode==='custom' && !criteria.oddAllowed.has(oddEvenKey(nums))) return false;
+      if(criteria.acMode==='custom' && !criteria.acAllowed.has(stats.ac)) return false;
+      return true;
+    }
+    function generateCustomAutoResult(){
+      const criteria = state.customAuto.criteria;
+      const validationError = validateCriteria(criteria);
+      if(validationError){
+        state.customAuto.error = validationError;
+        renderCustomAuto();
+        return;
+      }
+      const pool = RANGE.filter(n => !state.customAuto.excluded.has(n));
+      if(pool.length < 6){
+        state.customAuto.error = '제외수를 적용하면 생성 가능한 숫자가 6개 미만입니다.';
+        renderCustomAuto();
+        return;
+      }
+      let result = null;
+      for(let i=0;i<30000;i++){
+        const candidate = pickRandom(pool, 6);
+        if(criteriaMatch(candidate, criteria)){
+          result = candidate;
+          break;
+        }
+      }
+      if(!result){
+        state.customAuto.error = '조건을 만족하는 조합이 없습니다. 조건을 완화하거나 제외수를 조정해주세요.';
+        renderCustomAuto();
+        return;
+      }
+      state.customAuto.final = result;
+      state.customAuto.error = '';
+      renderCustomAuto();
+    }
+    function renderCustomSettingsPanel(panel){
+      const criteria = state.customAuto.criteria;
+      if(criteria.openPanel !== panel) return '';
+      if(panel==='sum'){
+        return `
+          <div class="custom-settings-panel">
+            <div class="custom-settings-title">합계 설정</div>
+            <div class="seg-row">
+              <button class="seg-btn ${criteria.sumMode==='auto' ? 'active' : ''}" data-custom-mode="sum|auto">자동</button>
+              <button class="seg-btn ${criteria.sumMode==='custom' ? 'active' : ''}" data-custom-mode="sum|custom">커스텀</button>
+            </div>
+            ${criteria.sumMode==='custom' ? `<div class="custom-range">
+              <input type="number" min="21" max="255" value="${criteria.sumMin}" data-custom-range="sumMin" placeholder="최소값">
+              <input type="number" min="21" max="255" value="${criteria.sumMax}" data-custom-range="sumMax" placeholder="최대값">
+            </div>` : ''}
+            <div class="condition-note">예: 120~190, 25~255</div>
+          </div>`;
+      }
+      if(panel==='odd'){
+        const options = ['6:0','5:1','4:2','3:3','2:4','1:5','0:6'];
+        return `
+          <div class="custom-settings-panel">
+            <div class="custom-settings-title">홀짝 설정</div>
+            <div class="seg-row">
+              <button class="seg-btn ${criteria.oddMode==='auto' ? 'active' : ''}" data-custom-mode="odd|auto">자동</button>
+              <button class="seg-btn ${criteria.oddMode==='custom' ? 'active' : ''}" data-custom-mode="odd|custom">커스텀</button>
+            </div>
+            ${criteria.oddMode==='custom' ? `<div class="check-grid">
+              ${options.map(op => `<label class="check-chip"><input type="checkbox" data-custom-odd="${op}" ${criteria.oddAllowed.has(op) ? 'checked' : ''}>${op}</label>`).join('')}
+            </div>` : ''}
+          </div>`;
+      }
+      const options = [1,2,3,4,5,6,7,8,9,10];
+      return `
+        <div class="custom-settings-panel">
+          <div class="custom-settings-title">AC값 설정</div>
+          <div class="seg-row">
+            <button class="seg-btn ${criteria.acMode==='auto' ? 'active' : ''}" data-custom-mode="ac|auto">자동</button>
+            <button class="seg-btn ${criteria.acMode==='custom' ? 'active' : ''}" data-custom-mode="ac|custom">커스텀</button>
+          </div>
+          ${criteria.acMode==='custom' ? `<div class="check-grid">
+            ${options.map(op => `<label class="check-chip"><input type="checkbox" data-custom-ac="${op}" ${criteria.acAllowed.has(op) ? 'checked' : ''}>${op}</label>`).join('')}
+          </div>` : ''}
+        </div>`;
+    }
+    function customStatValueText(panel, visibleNumbers){
+      const criteria = state.customAuto.criteria;
+      const stats = visibleNumbers.length ? calcStats(visibleNumbers) : null;
+      if(panel==='sum'){
+        const cond = criteria.sumMode==='auto' ? '자동' : `${criteria.sumMin}~${criteria.sumMax}`;
+        return stats ? `<span class="custom-result">${stats.sum}</span> / <span class="custom-cond">${cond}</span>` : cond;
+      }
+      if(panel==='odd'){
+        const cond = criteria.oddMode==='auto' ? '자동' : customOddAllowedText(criteria.oddAllowed);
+        return stats ? `<span class="custom-result">${oddEvenKey(visibleNumbers)}</span> / <span class="custom-cond">${cond}</span>` : cond;
+      }
+      const cond = criteria.acMode==='auto' ? '자동' : [...criteria.acAllowed].sort((a,b)=>a-b).join(', ');
+      return stats ? `<span class="custom-result">${stats.ac}</span> / <span class="custom-cond">${cond}</span>` : cond;
+    }
+    function attachCustomAutoEvents(target){
+      target.querySelectorAll('[data-custom-panel]').forEach(node => {
+        node.addEventListener('click', () => {
+          const panel = node.dataset.customPanel;
+          state.customAuto.criteria.openPanel = state.customAuto.criteria.openPanel===panel ? null : panel;
+          renderCustomAuto();
+        });
+      });
+      target.querySelectorAll('[data-custom-mode]').forEach(node => {
+        node.addEventListener('click', () => {
+          const [panel, mode] = node.dataset.customMode.split('|');
+          if(panel==='sum') state.customAuto.criteria.sumMode = mode;
+          if(panel==='odd') state.customAuto.criteria.oddMode = mode;
+          if(panel==='ac') state.customAuto.criteria.acMode = mode;
+          renderCustomAuto();
+        });
+      });
+      target.querySelectorAll('[data-custom-range]').forEach(node => {
+        node.addEventListener('input', () => {
+          state.customAuto.criteria[node.dataset.customRange] = node.value;
+        });
+      });
+      target.querySelectorAll('[data-custom-odd]').forEach(node => {
+        node.addEventListener('change', () => {
+          const value = node.dataset.customOdd;
+          if(state.customAuto.criteria.oddAllowed.has(value)) state.customAuto.criteria.oddAllowed.delete(value);
+          else state.customAuto.criteria.oddAllowed.add(value);
+          renderCustomAuto();
+        });
+      });
+      target.querySelectorAll('[data-custom-ac]').forEach(node => {
+        node.addEventListener('change', () => {
+          const value = Number(node.dataset.customAc);
+          if(state.customAuto.criteria.acAllowed.has(value)) state.customAuto.criteria.acAllowed.delete(value);
+          else state.customAuto.criteria.acAllowed.add(value);
+          renderCustomAuto();
+        });
+      });
+      target.querySelectorAll('.forecast-num[data-num]').forEach(node => {
+        node.addEventListener('click', () => {
+          if(!state.customAuto.excludeMode) return;
+          const num = Number(node.dataset.num);
+          toggleSet(state.customAuto.excluded, num);
+          clearCustomAutoResult();
+          renderCustomAuto();
+        });
+      });
+      target.querySelector('[data-custom-inline="generate"]').addEventListener('click', generateCustomAutoResult);
+      target.querySelector('[data-custom-inline="save"]').addEventListener('click', (e) => {
+        const nums = sorted(state.customAuto.final);
+        if(nums.length !== 6) return;
+        if(saveCustomCombination(nums)) flashButton(e.currentTarget, '저장');
+      });
+      target.querySelector('[data-custom-inline="copy"]').addEventListener('click', async (e) => {
+        const nums = sorted(state.customAuto.final);
+        if(nums.length !== 6) return;
+        await writeClipboard(nums.join(', '));
+        flashButton(e.currentTarget, '복사');
+      });
+    }
+    function renderCustomAuto(){
+      if(state.currentScreen !== 'custom') return;
+      const visibleNumbers = sorted(state.customAuto.final);
+      const target = el.customAutoSlip;
+      target.innerHTML = `
+        <div class="forecast-slip-shell">
+          <div class="forecast-slip">
+            <div class="forecast-slip-grid-wrap">
+              <button class="gen-btn" data-custom-inline="generate">생성</button>
+              <svg class="forecast-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+              <div class="forecast-slip-grid">
+                ${GRID_NUMBERS.map((n) => {
+                  if(!n) return '<div class="forecast-num blank"></div>';
+                  const selected = state.customAuto.final.includes(n);
+                  const excluded = state.customAuto.excluded.has(n);
+                  const badgeClass = getBucket(n);
+                  let label = `<span>${n}</span>`;
+                  if(selected) label = `<div class="forecast-num-badge ${badgeClass}">${n}</div>`;
+                  if(excluded && !selected) label = `<span>${n}</span>`;
+                  return `<div class="forecast-num ${selected ? 'selected' : ''} ${excluded ? 'excluded' : ''}" data-num="${n}">${label}</div>`;
+                }).join('')}
+              </div>
+            </div>
+            <div class="forecast-slip-info">
+              <div class="display-row">
+                <div class="speech-box">
+                  <div class="k">표시 번호</div>
+                  <div class="v">${formatNums(visibleNumbers)}</div>
+                </div>
+                <button class="save-btn" data-custom-inline="save">저장</button>
+                <button class="copy-btn" data-custom-inline="copy">복사</button>
+              </div>
+              <div class="stats-row">
+                <div class="stat-box custom-stat" data-custom-panel="sum"><div class="k">합계</div><div class="v">${customStatValueText('sum', visibleNumbers)}</div></div>
+                <div class="stat-box custom-stat" data-custom-panel="odd"><div class="k">홀짝</div><div class="v">${customStatValueText('odd', visibleNumbers)}</div></div>
+                <div class="stat-box custom-stat" data-custom-panel="ac"><div class="k">AC값</div><div class="v">${customStatValueText('ac', visibleNumbers)}</div></div>
+                <div class="stat-box"><div class="k">상태</div><div class="v">${visibleNumbers.length ? '조건 생성 완료' : '조건 대기'}</div></div>
+              </div>
+              ${renderCustomSettingsPanel('sum')}
+              ${renderCustomSettingsPanel('odd')}
+              ${renderCustomSettingsPanel('ac')}
+            </div>
+          </div>
+        </div>`;
+      attachCustomAutoEvents(target);
+      const grid = target.querySelector('.forecast-slip-grid');
+      drawLines(target.querySelector('.forecast-line-layer'), grid, visibleNumbers);
+      el.customAutoExcludedText.textContent = formatNums(sorted(state.customAuto.excluded));
+      el.customAutoStateText.textContent = customSummaryText(state.customAuto.criteria);
+      setNotice(el.customAutoError, state.customAuto.error);
+      el.customAutoExMode.textContent = `제외수 설정 ${state.customAuto.excludeMode ? 'ON' : 'OFF'}`;
+      el.customAutoExMode.classList.toggle('active', state.customAuto.excludeMode);
+    }
+    function renderCustomSaved(){
+      if(state.currentScreen !== 'custom') return;
+      if(!state.customSaved.length){
+        el.customSavedList.innerHTML = '<div class="saved-empty">저장된 번호가 없습니다.</div>';
+        return;
+      }
+      let lastPartition = '';
+      el.customSavedList.classList.toggle('scrollable', state.customSaved.length>20);
+      el.customSavedList.innerHTML = state.customSaved.map((item, idx) => {
+        const partitionKey = getPartitionKey(item.createdAt);
+        const partition = partitionKey !== lastPartition
+          ? `<div class="list-date-partition"><span class="list-date-label">${formatPartitionDate(item.createdAt)}</span></div>`
+          : '';
+        lastPartition = partitionKey;
+        return `${partition}
+        <div class="saved-item">
+          <div class="saved-idx">${idx+1}줄</div>
+          <div class="saved-nums">${item.nums.map(num => `<span class="saved-ball ${getBucket(num)}">${num}</span>`).join('')}</div>
+          <button class="delete-saved" data-custom-saved-index="${idx}">×</button>
+        </div>`;
+      }).join('');
+      el.customSavedList.querySelectorAll('[data-custom-saved-index]').forEach(btn => {
+        btn.addEventListener('click', ()=> {
+          state.customSaved.splice(Number(btn.dataset.customSavedIndex), 1);
+          persistCustomSaved();
+          renderCustomSaved();
+        });
+      });
+    }
+    async function copyCustomSaved(button){
+      const text = state.customSaved.map(item => item.nums.join(', ')).join('\n');
+      if(!text) return;
+      await writeClipboard(text);
+      flashButton(button, '복사');
+    }
+
+
+    function generateCustomSemiResult(){
+      const criteria = state.customSemi.criteria;
+      const validationError = validateCriteria(criteria);
+      if(validationError){
+        state.customSemi.error = validationError;
+        renderCustomSemi();
+        return;
+      }
+      const selected = new Set(state.customSemi.selected);
+      if(selected.size === 0){
+        state.customSemi.error = '커스텀 반자동은 번호를 1개 이상 선택해야 생성할 수 있습니다.';
+        renderCustomSemi();
+        return;
+      }
+      if([...selected].some(n => state.customSemi.excluded.has(n))){
+        state.customSemi.error = '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.';
+        renderCustomSemi();
+        return;
+      }
+      const need = 6 - selected.size;
+      const pool = RANGE.filter(n => !selected.has(n) && !state.customSemi.excluded.has(n));
+      if(pool.length < need){
+        state.customSemi.error = '제외수를 적용하면 생성 가능한 숫자가 부족합니다.';
+        renderCustomSemi();
+        return;
+      }
+      let result = null;
+      for(let i=0;i<40000;i++){
+        const candidate = [...selected, ...pickRandom(pool, need)].sort((a,b)=>a-b);
+        if(criteriaMatch(candidate, criteria)){
+          result = candidate;
+          break;
+        }
+      }
+      if(!result){
+        state.customSemi.error = '조건을 만족하는 조합이 없습니다. 조건을 완화하거나 제외수/선택수를 조정해주세요.';
+        renderCustomSemi();
+        return;
+      }
+      state.customSemi.final = result;
+      state.customSemi.error = '';
+      renderCustomSemi();
+    }
+    function renderCustomSettingsPanelByType(type, panel){
+      const criteria = customCriteriaFor(type);
+      if(criteria.openPanel !== panel) return '';
+      if(panel==='sum'){
+        return `
+          <div class="custom-settings-panel">
+            <div class="custom-settings-title">합계 설정</div>
+            <div class="seg-row">
+              <button class="seg-btn ${criteria.sumMode==='auto' ? 'active' : ''}" data-custom-mode="${type}|sum|auto">자동</button>
+              <button class="seg-btn ${criteria.sumMode==='custom' ? 'active' : ''}" data-custom-mode="${type}|sum|custom">커스텀</button>
+            </div>
+            ${criteria.sumMode==='custom' ? `<div class="custom-range">
+              <input type="number" min="21" max="255" value="${criteria.sumMin}" data-custom-range="${type}|sumMin" placeholder="최소값">
+              <input type="number" min="21" max="255" value="${criteria.sumMax}" data-custom-range="${type}|sumMax" placeholder="최대값">
+            </div>` : ''}
+            <div class="condition-note">예: 120~190, 25~255</div>
+          </div>`;
+      }
+      if(panel==='odd'){
+        const options = ['6:0','5:1','4:2','3:3','2:4','1:5','0:6'];
+        return `
+          <div class="custom-settings-panel">
+            <div class="custom-settings-title">홀짝 설정</div>
+            <div class="seg-row">
+              <button class="seg-btn ${criteria.oddMode==='auto' ? 'active' : ''}" data-custom-mode="${type}|odd|auto">자동</button>
+              <button class="seg-btn ${criteria.oddMode==='custom' ? 'active' : ''}" data-custom-mode="${type}|odd|custom">커스텀</button>
+            </div>
+            ${criteria.oddMode==='custom' ? `<div class="check-grid">
+              ${options.map(op => `<label class="check-chip"><input type="checkbox" data-custom-odd="${type}|${op}" ${criteria.oddAllowed.has(op) ? 'checked' : ''}>${op}</label>`).join('')}
+            </div>` : ''}
+          </div>`;
+      }
+      const options = [1,2,3,4,5,6,7,8,9,10];
+      return `
+        <div class="custom-settings-panel">
+          <div class="custom-settings-title">AC값 설정</div>
+          <div class="seg-row">
+            <button class="seg-btn ${criteria.acMode==='auto' ? 'active' : ''}" data-custom-mode="${type}|ac|auto">자동</button>
+            <button class="seg-btn ${criteria.acMode==='custom' ? 'active' : ''}" data-custom-mode="${type}|ac|custom">커스텀</button>
+          </div>
+          ${criteria.acMode==='custom' ? `<div class="check-grid">
+            ${options.map(op => `<label class="check-chip"><input type="checkbox" data-custom-ac="${type}|${op}" ${criteria.acAllowed.has(op) ? 'checked' : ''}>${op}</label>`).join('')}
+          </div>` : ''}
+        </div>`;
+    }
+    function customStatValueTextByType(type, panel, visibleNumbers){
+      const criteria = customCriteriaFor(type);
+      const stats = visibleNumbers.length ? calcStats(visibleNumbers) : null;
+      if(panel==='sum'){
+        const cond = criteria.sumMode==='auto' ? '자동' : `${criteria.sumMin}~${criteria.sumMax}`;
+        return stats ? `<span class="custom-result">${stats.sum}</span> / <span class="custom-cond">${cond}</span>` : cond;
+      }
+      if(panel==='odd'){
+        const cond = criteria.oddMode==='auto' ? '자동' : customOddAllowedText(criteria.oddAllowed);
+        return stats ? `<span class="custom-result">${oddEvenKey(visibleNumbers)}</span> / <span class="custom-cond">${cond}</span>` : cond;
+      }
+      const cond = criteria.acMode==='auto' ? '자동' : [...criteria.acAllowed].sort((a,b)=>a-b).join(', ');
+      return stats ? `<span class="custom-result">${stats.ac}</span> / <span class="custom-cond">${cond}</span>` : cond;
+    }
+    function attachCustomCriteriaEvents(target, type, rerenderFn){
+      target.querySelectorAll('[data-custom-panel]').forEach(node => {
+        node.addEventListener('click', () => {
+          const [,panel] = node.dataset.customPanel.split('|');
+          const criteria = customCriteriaFor(type);
+          criteria.openPanel = criteria.openPanel===panel ? null : panel;
+          rerenderFn();
+        });
+      });
+      target.querySelectorAll('[data-custom-mode]').forEach(node => {
+        node.addEventListener('click', () => {
+          const [modeType, panel, mode] = node.dataset.customMode.split('|');
+          const criteria = customCriteriaFor(modeType);
+          if(panel==='sum') criteria.sumMode = mode;
+          if(panel==='odd') criteria.oddMode = mode;
+          if(panel==='ac') criteria.acMode = mode;
+          rerenderFn();
+        });
+      });
+      target.querySelectorAll('[data-custom-range]').forEach(node => {
+        node.addEventListener('input', () => {
+          const [rangeType, key] = node.dataset.customRange.split('|');
+          customCriteriaFor(rangeType)[key] = node.value;
+        });
+      });
+      target.querySelectorAll('[data-custom-odd]').forEach(node => {
+        node.addEventListener('change', () => {
+          const [oddType, value] = node.dataset.customOdd.split('|');
+          const set = customCriteriaFor(oddType).oddAllowed;
+          if(set.has(value)) set.delete(value); else set.add(value);
+          rerenderFn();
+        });
+      });
+      target.querySelectorAll('[data-custom-ac]').forEach(node => {
+        node.addEventListener('change', () => {
+          const [acType, value] = node.dataset.customAc.split('|');
+          const set = customCriteriaFor(acType).acAllowed;
+          const num = Number(value);
+          if(set.has(num)) set.delete(num); else set.add(num);
+          rerenderFn();
+        });
+      });
+    }
+    function renderCustomSemi(){
+      if(state.currentScreen !== 'custom') return;
+      const visibleNumbers = state.customSemi.final.length ? sorted(state.customSemi.final) : sorted(state.customSemi.selected);
+      const target = el.customSemiSlip;
+      target.innerHTML = `
+        <div class="forecast-slip-shell">
+          <div class="forecast-slip">
+            <div class="forecast-slip-grid-wrap">
+              <button class="gen-btn" data-custom-semi-inline="generate">생성</button>
+              <svg class="forecast-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+              <div class="forecast-slip-grid">
+                ${GRID_NUMBERS.map((n) => {
+                  if(!n) return '<div class="forecast-num blank"></div>';
+                  const selected = state.customSemi.final.length ? state.customSemi.final.includes(n) : state.customSemi.selected.has(n);
+                  const excluded = state.customSemi.excluded.has(n);
+                  const conflict = state.customSemi.selected.has(n) && state.customSemi.excluded.has(n);
+                  const pending = !state.customSemi.final.length && state.customSemi.selected.has(n);
+                  const badgeClass = getBucket(n);
+                  let label = `<span>${n}</span>`;
+                  if(selected) label = `<div class="forecast-num-badge ${badgeClass}">${n}</div>`;
+                  if(excluded && !selected) label = `<span>${n}</span>`;
+                  return `<div class="forecast-num ${selected ? 'selected' : ''} ${excluded ? 'excluded' : ''} ${conflict ? 'conflict' : ''} ${pending ? 'pending' : ''}" data-num="${n}">${label}</div>`;
+                }).join('')}
+              </div>
+            </div>
+            <div class="forecast-slip-info">
+              <div class="display-row">
+                <div class="speech-box">
+                  <div class="k">표시 번호</div>
+                  <div class="v">${formatNums(visibleNumbers)}</div>
+                </div>
+                <button class="save-btn" data-custom-semi-inline="save">저장</button>
+                <button class="copy-btn" data-custom-semi-inline="copy">복사</button>
+              </div>
+              <div class="stats-row">
+                <div class="stat-box custom-stat" data-custom-panel="customSemi|sum"><div class="k">합계</div><div class="v">${customStatValueTextByType('customSemi', 'sum', visibleNumbers)}</div></div>
+                <div class="stat-box custom-stat" data-custom-panel="customSemi|odd"><div class="k">홀짝</div><div class="v">${customStatValueTextByType('customSemi', 'odd', visibleNumbers)}</div></div>
+                <div class="stat-box custom-stat" data-custom-panel="customSemi|ac"><div class="k">AC값</div><div class="v">${customStatValueTextByType('customSemi', 'ac', visibleNumbers)}</div></div>
+                <div class="stat-box"><div class="k">상태</div><div class="v">${visibleNumbers.length ? '조건 생성 대기/완료' : '조건 대기'}</div></div>
+              </div>
+              ${renderCustomSettingsPanelByType('customSemi', 'sum')}
+              ${renderCustomSettingsPanelByType('customSemi', 'odd')}
+              ${renderCustomSettingsPanelByType('customSemi', 'ac')}
+            </div>
+          </div>
+        </div>`;
+      attachCustomCriteriaEvents(target, 'customSemi', renderCustomSemi);
+      target.querySelectorAll('.forecast-num[data-num]').forEach(node => {
+        node.addEventListener('click', () => {
+          const num = Number(node.dataset.num);
+          if(state.customSemi.excludeMode){
+            toggleSet(state.customSemi.excluded, num);
+            clearCustomSemiResult(true);
+            state.customSemi.error = [...state.customSemi.selected].some(n => state.customSemi.excluded.has(n)) ? '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.' : '';
+          } else {
+            if(state.customSemi.selected.has(num)) state.customSemi.selected.delete(num);
+            else {
+              if(state.customSemi.selected.size >= 5){
+                state.customSemi.error = '커스텀 반자동은 최대 5개까지만 직접 선택할 수 있습니다.';
+                renderCustomSemi();
+                return;
+              }
+              state.customSemi.selected.add(num);
+            }
+            clearCustomSemiResult(true);
+            state.customSemi.error = [...state.customSemi.selected].some(n => state.customSemi.excluded.has(n)) ? '선택번호와 제외번호가 겹쳐 생성할 수 없습니다.' : '';
+          }
+          renderCustomSemi();
+        });
+      });
+      target.querySelector('[data-custom-semi-inline="generate"]').addEventListener('click', generateCustomSemiResult);
+      target.querySelector('[data-custom-semi-inline="save"]').addEventListener('click', (e) => {
+        const nums = sorted(state.customSemi.final);
+        if(nums.length !== 6) return;
+        if(saveCustomCombination(nums)) flashButton(e.currentTarget, '저장');
+      });
+      target.querySelector('[data-custom-semi-inline="copy"]').addEventListener('click', async (e) => {
+        const nums = sorted(state.customSemi.final);
+        if(nums.length !== 6) return;
+        await writeClipboard(nums.join(', '));
+        flashButton(e.currentTarget, '복사');
+      });
+      const grid = target.querySelector('.forecast-slip-grid');
+      drawLines(target.querySelector('.forecast-line-layer'), grid, visibleNumbers);
+      el.customSemiSelectedText.textContent = formatNums(sorted(state.customSemi.selected));
+      el.customSemiExcludedText.textContent = formatNums(sorted(state.customSemi.excluded));
+      setNotice(el.customSemiError, state.customSemi.error);
+      el.customSemiExMode.textContent = `제외수 설정 ${state.customSemi.excludeMode ? 'ON' : 'OFF'}`;
+      el.customSemiExMode.classList.toggle('active', state.customSemi.excludeMode);
     }
 
     function renderSaved(){
@@ -678,6 +1432,7 @@
     }
 
     function render(){
+      bindAccordions();
       updateTexts();
       renderPurchaseSlip();
       renderSlip(el.autoSlip, 'auto');
@@ -686,6 +1441,9 @@
       renderSaved();
       renderPurchaseSaved();
       renderPurchaseStats();
+      renderCustomAuto();
+      renderCustomSemi();
+      renderCustomSaved();
     }
 
     function renderPurchaseSlip(){
@@ -771,7 +1529,7 @@
       el.purchaseStatsList.innerHTML = stats.map(item => `
         <div class="stats-item">
           <div class="saved-ball ${getBucket(item.num)}">${item.num}</div>
-          <div class="stats-count">${item.count}개</div>
+          <div class="stats-count">${item.count}회</div>
         </div>
       `).join('');
     }
@@ -869,6 +1627,23 @@
       render();
     }
 
+
+    function setScreen(screen){
+      state.currentScreen = screen;
+      const mainSections = Array.from(document.querySelectorAll('.app > section:not(#custom-screen)'));
+      mainSections.forEach(node => {
+        node.style.display = screen === 'main' ? '' : 'none';
+      });
+      const customScreen = document.getElementById('custom-screen');
+      if(customScreen) customScreen.style.display = screen === 'custom' ? '' : 'none';
+      bindAccordions();
+      if(screen === 'custom'){
+        renderCustomAuto();
+        renderCustomSemi();
+        renderCustomSaved();
+      }
+    }
+
     document.getElementById('auto-generate').addEventListener('click', generateAuto);
     document.getElementById('auto-reset').addEventListener('click', ()=>{ clearAutoResult(); render(); });
     document.getElementById('auto-ex-reset').addEventListener('click', ()=>{ state.auto.excluded.clear(); clearAutoResult(); render(); });
@@ -895,9 +1670,22 @@
     el.purchaseStatsToggle.addEventListener('click', ()=>{
       el.purchaseStatsBanner.classList.toggle('open');
     });
+    document.getElementById('open-custom-screen').addEventListener('click', ()=> setScreen('custom'));
+    document.getElementById('close-custom-screen').addEventListener('click', ()=> setScreen('main'));
+    document.getElementById('custom-auto-generate').addEventListener('click', generateCustomAutoResult);
+    document.getElementById('custom-auto-reset').addEventListener('click', ()=>{ clearCustomAutoResult(); renderCustomAuto(); });
+    document.getElementById('custom-auto-ex-reset').addEventListener('click', ()=>{ state.customAuto.excluded.clear(); clearCustomAutoResult(); renderCustomAuto(); });
+    document.getElementById('custom-auto-ex-mode').addEventListener('click', ()=>{ state.customAuto.excludeMode = !state.customAuto.excludeMode; renderCustomAuto(); });
+    document.getElementById('custom-semi-generate').addEventListener('click', generateCustomSemiResult);
+    document.getElementById('custom-semi-reset').addEventListener('click', ()=>{ state.customSemi.selected.clear(); clearCustomSemiResult(); renderCustomSemi(); });
+    document.getElementById('custom-semi-ex-reset').addEventListener('click', ()=>{ state.customSemi.excluded.clear(); clearCustomSemiResult(true); state.customSemi.error=''; renderCustomSemi(); });
+    document.getElementById('custom-semi-ex-mode').addEventListener('click', ()=>{ state.customSemi.excludeMode = !state.customSemi.excludeMode; renderCustomSemi(); });
+    document.getElementById('custom-saved-copy').addEventListener('click', (e)=>copyCustomSaved(e.currentTarget));
+    document.getElementById('custom-saved-clear').addEventListener('click', ()=>{ state.customSaved = []; persistCustomSaved(); renderCustomSaved(); });
 
     window.addEventListener('resize', render);
     render();
+    setScreen('main');
   </script>
 </body>
 </html>
